@@ -1,0 +1,1092 @@
+{
+  "legs": [
+    {
+      "steps": [
+        {
+          "intersections": [
+            {
+              "out": 0,
+              "entry": [
+                true
+              ],
+              "bearings": [
+                112
+              ],
+              "location": [
+                105.587604,
+                21.309345
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.587604,
+                21.309345
+              ],
+              [
+                105.587835,
+                21.309259
+              ],
+              [
+                105.587953,
+                21.309182
+              ],
+              [
+                105.588183,
+                21.309221
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 112,
+            "bearing_before": 0,
+            "location": [
+              105.587604,
+              21.309345
+            ],
+            "type": "depart"
+          },
+          "name": "",
+          "mode": "driving",
+          "weight": 9.3,
+          "duration": 9.3,
+          "distance": 65
+        },
+        {
+          "intersections": [
+            {
+              "out": 1,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                0,
+                90,
+                255
+              ],
+              "location": [
+                105.588183,
+                21.309221
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.588183,
+                21.309221
+              ],
+              [
+                105.588278,
+                21.30923
+              ],
+              [
+                105.588469,
+                21.309263
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 82,
+            "bearing_before": 78,
+            "location": [
+              105.588183,
+              21.309221
+            ],
+            "modifier": "straight",
+            "type": "turn"
+          },
+          "name": "",
+          "mode": "driving",
+          "weight": 14.6,
+          "duration": 7.3,
+          "distance": 30.1
+        },
+        {
+          "intersections": [
+            {
+              "out": 0,
+              "in": 1,
+              "entry": [
+                true,
+                false,
+                true
+              ],
+              "bearings": [
+                120,
+                255,
+                345
+              ],
+              "location": [
+                105.588469,
+                21.309263
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.588469,
+                21.309263
+              ],
+              [
+                105.588597,
+                21.309174
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 126,
+            "bearing_before": 78,
+            "location": [
+              105.588469,
+              21.309263
+            ],
+            "modifier": "right",
+            "type": "turn"
+          },
+          "name": "",
+          "mode": "driving",
+          "weight": 9.3,
+          "duration": 5.4,
+          "distance": 16.5
+        },
+        {
+          "intersections": [
+            {
+              "out": 1,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                30,
+                210,
+                300
+              ],
+              "location": [
+                105.588597,
+                21.309174
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.588597,
+                21.309174
+              ],
+              [
+                105.588455,
+                21.30894
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 209,
+            "bearing_before": 126,
+            "location": [
+              105.588597,
+              21.309174
+            ],
+            "modifier": "right",
+            "type": "turn"
+          },
+          "name": "Lê Lợi",
+          "mode": "driving",
+          "weight": 2.7,
+          "duration": 2.7,
+          "distance": 29.8
+        },
+        {
+          "intersections": [
+            {
+              "out": 2,
+              "in": 0,
+              "entry": [
+                false,
+                false,
+                true,
+                true
+              ],
+              "bearings": [
+                30,
+                105,
+                195,
+                270
+              ],
+              "location": [
+                105.588455,
+                21.30894
+              ]
+            },
+            {
+              "out": 1,
+              "in": 0,
+              "entry": [
+                false,
+                true,
+                false
+              ],
+              "bearings": [
+                15,
+                105,
+                270
+              ],
+              "location": [
+                105.588436,
+                21.308852
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                90,
+                195,
+                285
+              ],
+              "location": [
+                105.589133,
+                21.30875
+              ]
+            },
+            {
+              "out": 1,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                0,
+                90,
+                270
+              ],
+              "location": [
+                105.591719,
+                21.308658
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                120,
+                225,
+                285
+              ],
+              "location": [
+                105.592162,
+                21.30858
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                120,
+                165,
+                300
+              ],
+              "location": [
+                105.592311,
+                21.308521
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                105,
+                195,
+                285
+              ],
+              "location": [
+                105.592822,
+                21.308326
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "maneuver": {
+            "bearing_after": 191,
+            "bearing_before": 209,
+            "location": [
+              105.588455,
+              21.30894
+            ],
+            "modifier": "left",
+            "type": "turn"
+          },
+          "geometry": {
+            "coordinates": [
+              [
+                105.588455,
+                21.30894
+              ],
+              [
+                105.588436,
+                21.308852
+              ],
+              [
+                105.588685,
+                21.308811
+              ],
+              [
+                105.589133,
+                21.30875
+              ],
+              [
+                105.589927,
+                21.308717
+              ],
+              [
+                105.591283,
+                21.308688
+              ],
+              [
+                105.591719,
+                21.308658
+              ],
+              [
+                105.591886,
+                21.308644
+              ],
+              [
+                105.591952,
+                21.308637
+              ],
+              [
+                105.592018,
+                21.308625
+              ],
+              [
+                105.592162,
+                21.30858
+              ],
+              [
+                105.592311,
+                21.308521
+              ],
+              [
+                105.592644,
+                21.308389
+              ],
+              [
+                105.592822,
+                21.308326
+              ],
+              [
+                105.592892,
+                21.308301
+              ],
+              [
+                105.59323,
+                21.308182
+              ]
+            ],
+            "type": "LineString"
+          },
+          "ref": "QL.2",
+          "name": "Đường Hùng Vương",
+          "mode": "driving",
+          "weight": 34.7,
+          "duration": 34.7,
+          "distance": 517.9
+        },
+        {
+          "intersections": [
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false,
+                false
+              ],
+              "bearings": [
+                135,
+                180,
+                285,
+                330
+              ],
+              "location": [
+                105.59323,
+                21.308182
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.59323,
+                21.308182
+              ],
+              [
+                105.593265,
+                21.308147
+              ],
+              [
+                105.593307,
+                21.308117
+              ],
+              [
+                105.593353,
+                21.308095
+              ],
+              [
+                105.593402,
+                21.30808
+              ],
+              [
+                105.593453,
+                21.308072
+              ],
+              [
+                105.593505,
+                21.308073
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "exit": 2,
+            "bearing_after": 137,
+            "bearing_before": 109,
+            "location": [
+              105.59323,
+              21.308182
+            ],
+            "modifier": "slight right",
+            "type": "roundabout"
+          },
+          "name": "Đường Ngô Quyền",
+          "mode": "driving",
+          "weight": 1.8,
+          "duration": 1.8,
+          "distance": 32.3
+        },
+        {
+          "intersections": [
+            {
+              "out": 1,
+              "in": 3,
+              "entry": [
+                true,
+                true,
+                false,
+                false
+              ],
+              "bearings": [
+                75,
+                120,
+                240,
+                270
+              ],
+              "location": [
+                105.593505,
+                21.308073
+              ]
+            },
+            {
+              "out": 1,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                75,
+                120,
+                300
+              ],
+              "location": [
+                105.59377,
+                21.307951
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                75,
+                180,
+                300
+              ],
+              "location": [
+                105.594821,
+                21.307463
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                75,
+                180,
+                255
+              ],
+              "location": [
+                105.595109,
+                21.307538
+              ]
+            },
+            {
+              "out": 0,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                75,
+                165,
+                255
+              ],
+              "location": [
+                105.595333,
+                21.307597
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.593505,
+                21.308073
+              ],
+              [
+                105.59377,
+                21.307951
+              ],
+              [
+                105.594821,
+                21.307463
+              ],
+              [
+                105.595109,
+                21.307538
+              ],
+              [
+                105.595333,
+                21.307597
+              ],
+              [
+                105.595559,
+                21.307656
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "exit": 2,
+            "bearing_after": 115,
+            "bearing_before": 85,
+            "location": [
+              105.593505,
+              21.308073
+            ],
+            "modifier": "slight right",
+            "type": "exit roundabout"
+          },
+          "name": "Đường Ngô Quyền",
+          "mode": "driving",
+          "weight": 23.5,
+          "duration": 23.5,
+          "distance": 231.8
+        },
+        {
+          "intersections": [
+            {
+              "out": 1,
+              "in": 2,
+              "entry": [
+                true,
+                true,
+                false,
+                true
+              ],
+              "bearings": [
+                75,
+                165,
+                255,
+                345
+              ],
+              "location": [
+                105.595559,
+                21.307656
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.595559,
+                21.307656
+              ],
+              [
+                105.59583,
+                21.306715
+              ],
+              [
+                105.595919,
+                21.306405
+              ],
+              [
+                105.595918,
+                21.306346
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 164,
+            "bearing_before": 73,
+            "location": [
+              105.595559,
+              21.307656
+            ],
+            "modifier": "right",
+            "type": "turn"
+          },
+          "name": "Phố Trần Quốc Toản",
+          "mode": "driving",
+          "weight": 26,
+          "duration": 26,
+          "distance": 150
+        },
+        {
+          "intersections": [
+            {
+              "out": 0,
+              "in": 3,
+              "entry": [
+                true,
+                true,
+                true,
+                false
+              ],
+              "bearings": [
+                90,
+                165,
+                270,
+                345
+              ],
+              "location": [
+                105.595918,
+                21.306346
+              ]
+            },
+            {
+              "out": 0,
+              "in": 1,
+              "entry": [
+                true,
+                false,
+                true
+              ],
+              "bearings": [
+                75,
+                270,
+                345
+              ],
+              "location": [
+                105.596159,
+                21.306374
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.595918,
+                21.306346
+              ],
+              [
+                105.596159,
+                21.306374
+              ],
+              [
+                105.596202,
+                21.30638
+              ],
+              [
+                105.596555,
+                21.306447
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 81,
+            "bearing_before": 165,
+            "location": [
+              105.595918,
+              21.306346
+            ],
+            "modifier": "left",
+            "type": "turn"
+          },
+          "name": "",
+          "mode": "driving",
+          "weight": 12.4,
+          "duration": 12.4,
+          "distance": 67.1
+        },
+        {
+          "intersections": [
+            {
+              "out": 0,
+              "in": 1,
+              "entry": [
+                true,
+                false,
+                true
+              ],
+              "bearings": [
+                180,
+                255,
+                345
+              ],
+              "location": [
+                105.596555,
+                21.306447
+              ]
+            },
+            {
+              "out": 2,
+              "in": 0,
+              "entry": [
+                false,
+                true,
+                true
+              ],
+              "bearings": [
+                0,
+                75,
+                180
+              ],
+              "location": [
+                105.596559,
+                21.306399
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.596555,
+                21.306447
+              ],
+              [
+                105.596559,
+                21.306399
+              ],
+              [
+                105.596595,
+                21.305985
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 174,
+            "bearing_before": 77,
+            "location": [
+              105.596555,
+              21.306447
+            ],
+            "modifier": "right",
+            "type": "end of road"
+          },
+          "name": "",
+          "mode": "driving",
+          "weight": 7.4,
+          "duration": 7.4,
+          "distance": 51.3
+        },
+        {
+          "intersections": [
+            {
+              "in": 0,
+              "entry": [
+                true
+              ],
+              "bearings": [
+                355
+              ],
+              "location": [
+                105.596595,
+                21.305985
+              ]
+            }
+          ],
+          "driving_side": "right",
+          "geometry": {
+            "coordinates": [
+              [
+                105.596595,
+                21.305985
+              ],
+              [
+                105.596595,
+                21.305985
+              ]
+            ],
+            "type": "LineString"
+          },
+          "maneuver": {
+            "bearing_after": 0,
+            "bearing_before": 175,
+            "location": [
+              105.596595,
+              21.305985
+            ],
+            "modifier": "left",
+            "type": "arrive"
+          },
+          "name": "",
+          "mode": "driving",
+          "weight": 0,
+          "duration": 0,
+          "distance": 0
+        }
+      ],
+      "weight": 141.7,
+      "summary": "Đường Hùng Vương, Phố Trần Quốc Toản",
+      "duration": 130.5,
+      "distance": 1191.7
+    }
+  ],
+  "weight_name": "routability",
+  "geometry": {
+    "coordinates": [
+      [
+        105.587604,
+        21.309345
+      ],
+      [
+        105.587835,
+        21.309259
+      ],
+      [
+        105.587953,
+        21.309182
+      ],
+      [
+        105.588183,
+        21.309221
+      ],
+      [
+        105.588278,
+        21.30923
+      ],
+      [
+        105.588469,
+        21.309263
+      ],
+      [
+        105.588597,
+        21.309174
+      ],
+      [
+        105.588455,
+        21.30894
+      ],
+      [
+        105.588436,
+        21.308852
+      ],
+      [
+        105.588685,
+        21.308811
+      ],
+      [
+        105.589133,
+        21.30875
+      ],
+      [
+        105.589927,
+        21.308717
+      ],
+      [
+        105.591283,
+        21.308688
+      ],
+      [
+        105.591719,
+        21.308658
+      ],
+      [
+        105.591886,
+        21.308644
+      ],
+      [
+        105.591952,
+        21.308637
+      ],
+      [
+        105.592018,
+        21.308625
+      ],
+      [
+        105.592162,
+        21.30858
+      ],
+      [
+        105.592311,
+        21.308521
+      ],
+      [
+        105.592644,
+        21.308389
+      ],
+      [
+        105.592822,
+        21.308326
+      ],
+      [
+        105.592892,
+        21.308301
+      ],
+      [
+        105.59323,
+        21.308182
+      ],
+      [
+        105.593265,
+        21.308147
+      ],
+      [
+        105.593307,
+        21.308117
+      ],
+      [
+        105.593353,
+        21.308095
+      ],
+      [
+        105.593402,
+        21.30808
+      ],
+      [
+        105.593453,
+        21.308072
+      ],
+      [
+        105.593505,
+        21.308073
+      ],
+      [
+        105.59377,
+        21.307951
+      ],
+      [
+        105.594821,
+        21.307463
+      ],
+      [
+        105.595109,
+        21.307538
+      ],
+      [
+        105.595333,
+        21.307597
+      ],
+      [
+        105.595559,
+        21.307656
+      ],
+      [
+        105.59583,
+        21.306715
+      ],
+      [
+        105.595919,
+        21.306405
+      ],
+      [
+        105.595918,
+        21.306346
+      ],
+      [
+        105.596159,
+        21.306374
+      ],
+      [
+        105.596202,
+        21.30638
+      ],
+      [
+        105.596555,
+        21.306447
+      ],
+      [
+        105.596559,
+        21.306399
+      ],
+      [
+        105.596595,
+        21.305985
+      ]
+    ],
+    "type": "LineString"
+  },
+  "weight": 141.7,
+  "duration": 130.5,
+  "distance": 1191.7
+}

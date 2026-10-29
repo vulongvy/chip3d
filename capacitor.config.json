@@ -1,0 +1,9 @@
+{
+  "appId": "com.chipenglish.adventure3d",
+  "appName": "Chip 3D",
+  "webDir": ".",
+  "bundledWebRuntime": false,
+  "ios": {
+    "contentInset": "always"
+  }
+}

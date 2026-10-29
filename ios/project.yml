@@ -1,0 +1,22 @@
+name: Chip3D
+options:
+  bundleIdPrefix: com.chipenglish
+  deploymentTarget:
+    iOS: "14.0"
+targets:
+  Chip3D:
+    type: application
+    platform: iOS
+    deploymentTarget: "14.0"
+    sources:
+      - path: Chip3D
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.chipenglish.adventure3d
+      PRODUCT_NAME: Chip3D
+      INFOPLIST_FILE: Chip3D/Info.plist
+      GENERATE_INFOPLIST_FILE: NO
+      SWIFT_VERSION: "5.0"
+      CODE_SIGN_STYLE: Manual
+      CODE_SIGN_IDENTITY: ""
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGNING_ALLOWED: NO

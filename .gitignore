@@ -1,0 +1,26 @@
+# Dependencies & Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+tools/git/
+
+# Temporary & Build outputs
+dist/
+ios/Chip3D/www/
+*.tmp
+*.log
+.gemini/
+.system_generated/
+
+# Heavy junctions / external data
+streetview_hd
+sample_map.png
+test_2k.jpg
+
+# OS files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store

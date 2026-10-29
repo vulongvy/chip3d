@@ -1,0 +1,9 @@
+# Thư viện tùy chọn (Optional Dependencies)
+# Không bắt buộc cài trước - file start_tool.py và start_tool.bat sẽ tự động
+# kiểm tra và cài đặt theo nhu cầu khi bạn chọn chức năng tương ứng!
+
+# 1. edge-tts: Dùng để sinh giọng đọc Neural AI (miễn phí, không cần GPU, chất lượng cao)
+edge-tts>=6.1.12
+
+# 2. websocket-client: Dùng cho dev tools (chụp ảnh màn hình kiểm thử 3D tự động)
+websocket-client>=1.8.0

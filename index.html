@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Chip English Adventure - Bản Đồ Đảo Phiêu Lưu</title>
+  
+  <!-- Apple iPhone / iOS PWA Fullscreen App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chip 3D">
+  <meta name="theme-color" content="#38bdf8">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=v52_streetview_41panos_realism">
+</head>
+<body>
+  <!-- Canvas Confetti Effect -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Animated Sky Elements (Clouds, Hot Air Balloon, Sky Whale) -->
+  <div class="sky-bg">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="sky-balloon">🎈</div>
+    <div class="sky-whale">🐳</div>
+  </div>
+
+  <!-- VICE CITY FULLSCREEN VIEWPORT (TOÀN MÀN HÌNH GAME THẾ GIỚI MỞ GTA VICE CITY) -->
+  <div id="vice-city-fullscreen-viewport" style="display: none; position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99990; background: transparent; pointer-events: none; overflow: hidden;">
+    <!-- Nút quay lại trường học, Bản đồ, Đi nhanh & Chỉ dẫn GPS (Toàn bộ góc trên bên trái - 100% Thoáng Không Gian Giữa & Không Che Biển Hiệu) -->
+    <div style="position: absolute; top: 12px; left: 16px; z-index: 99999; display: flex; flex-direction: column; gap: 6px; pointer-events: auto;">
+      <div style="display: flex; gap: 8px; align-items: center; position: relative;">
+        <button id="btn-back-to-school" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: 2px solid #7dd3fc; padding: 6px 14px; border-radius: 999px; font-weight: 900; font-size: 0.80rem; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.3); font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; gap: 5px;">
+          <span>🏫</span>
+          <span>VÀO TRƯỜNG</span>
+        </button>
+        <button id="btn-open-google-maps" style="background: linear-gradient(135deg, #ea4335, #c5221f); color: #fff; border: 2px solid #fca5a5; padding: 6px 14px; border-radius: 999px; font-weight: 900; font-size: 0.80rem; cursor: pointer; box-shadow: 0 4px 14px rgba(234,67,53,0.4); font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; gap: 5px;">
+          <span>🗺️</span>
+          <span>BẢN ĐỒ (M)</span>
+        </button>
+        <button id="btn-toggle-fast-travel" style="background: linear-gradient(135deg, #059669, #047857); color: #fff; border: 2px solid #6ee7b7; padding: 6px 14px; border-radius: 999px; font-weight: 900; font-size: 0.80rem; cursor: pointer; box-shadow: 0 4px 14px rgba(5,150,105,0.35); font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; gap: 5px;">
+          <span>⚡</span>
+          <span>ĐI NHANH ▾</span>
+        </button>
+
+        <!-- THANH CHỈ DẪN GOOGLE MAPS GỌN GÀNG GÓC TRÊN TRÁI - 100% THOÁNG TOÀN BỘ TRUNG TÂM & BIỂN HIỆU -->
+        <div id="gmaps-top-instruction" style="background: rgba(26, 115, 232, 0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1.5px solid rgba(168, 199, 250, 0.5); padding: 5px 14px; border-radius: 999px; box-shadow: 0 4px 18px rgba(0,0,0,0.3); color: #fff; font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; gap: 6px; white-space: nowrap; font-size: 0.80rem; font-weight: 800;">
+          <span style="font-size: 0.95rem; font-weight: 900; color: #fef08a;">⬆</span>
+          <span id="gmaps-top-text" style="color: #fff;">Đ. Trần Quốc Tuấn • Còn 1.16 km</span>
+        </div>
+
+        <!-- DROPDOWN DANH SÁCH 8 ĐỊA DANH NHANH -->
+        <div id="gmaps-fast-travel-bar" style="display: none; position: absolute; top: 40px; left: 160px; z-index: 99998; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1.5px solid rgba(110, 231, 183, 0.4); border-radius: 12px; padding: 6px; box-shadow: 0 12px 32px rgba(0,0,0,0.5); flex-direction: column; gap: 4px; min-width: 200px; pointer-events: auto;">
+          <button class="gmaps-pill-btn" data-tp="0" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">🏫 TH Ngô Quyền (0m)</button>
+          <button class="gmaps-pill-btn" data-tp="8" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">☕ Tiệm Bánh La Baker</button>
+          <button class="gmaps-pill-btn" data-tp="13" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">🔄 Bùng Binh Kim Ngọc</button>
+          <button class="gmaps-pill-btn" data-tp="traioi" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">🌊 Hồ Trại Ổi (Kim Ngọc)</button>
+          <button class="gmaps-pill-btn" data-tp="tinhuy" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">🌊 Hồ Tỉnh Ủy / Đầm Vạc</button>
+          <button class="gmaps-pill-btn" data-tp="park" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">🌳 Vườn Hoa UB TP</button>
+          <button class="gmaps-pill-btn" data-tp="35" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">🥐 Hưng Yên Bakery</button>
+          <button class="gmaps-pill-btn" data-tp="41" style="text-align: left; width: 100%; border-radius: 8px; padding: 5px 10px;">📍 Cây Cảnh Vũ Dậu (Đích)</button>
+        </div>
+      </div>
+      <div style="background: rgba(15,23,42,0.85); color: #fef08a; padding: 3px 10px; border-radius: 999px; font-weight: 800; font-size: 0.70rem; border: 1px solid rgba(254,240,138,0.3); backdrop-filter: blur(8px); font-family: 'Nunito', Arial, sans-serif; white-space: nowrap; width: fit-content;">
+        🎮 <strong>WASD:</strong> Di chuyển • <strong>[F]:</strong> Lên/Xuống xe • <strong>[C]:</strong> Góc nhìn
+      </div>
+    </div>
+
+    <!-- GOOGLE MAPS NAVIGATION RADAR & LIVE GPS (GÓC DƯỚI BÊN TRÁI) -->
+    <div id="vice-city-radar-container" style="position: absolute; bottom: 20px; left: 20px; z-index: 99995; pointer-events: auto; display: flex; flex-direction: column; align-items: stretch; gap: 6px; user-select: none; width: 236px;">
+      <!-- Google Maps Header Card -->
+      <div style="background: #1a73e8; border-radius: 14px; padding: 7px 12px; color: #fff; box-shadow: 0 4px 16px rgba(26,115,232,0.4); display: flex; flex-direction: column; gap: 2px; border: 1.5px solid rgba(255,255,255,0.25);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.72rem; font-weight: 800; letter-spacing: 0.5px; opacity: 0.95; display: flex; align-items: center; gap: 4px;">
+            <span style="color: #ea4335;">📍</span> GOOGLE MAPS GPS
+          </span>
+          <div style="display: flex; align-items: center; gap: 4px;">
+            <button id="btn-radar-zoom" title="Chuyển đổi góc nhìn Toàn cảnh / Cận cảnh" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 0.68rem; font-weight: 800; padding: 1px 6px; border-radius: 999px; cursor: pointer;">🔍 Toàn tuyến</button>
+            <button id="btn-radar-orient" title="Cố định hướng Bắc chuẩn Google Maps hoặc Xoay theo xe" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 0.68rem; font-weight: 800; padding: 1px 6px; border-radius: 999px; cursor: pointer;">🧭 Bắc ⬆</button>
+          </div>
+        </div>
+        <div id="vc-radar-street-badge" style="font-size: 0.84rem; font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #ffffff;">
+          ⬆ Đ. TRẦN QUỐC TUẤN
+        </div>
+      </div>
+
+      <!-- Google Maps Canvas Card Frame (Click để mở Bản đồ to) -->
+      <div id="vice-city-radar-card-frame" style="position: relative; width: 236px; height: 184px; border-radius: 16px; overflow: hidden; background: #f1f3f4; border: 2.5px solid #dadce0; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); cursor: pointer;" title="Nhấn vào đây để phóng to toàn màn hình Bản đồ Google Maps!">
+        <canvas id="vice-city-radar-canvas" width="236" height="184" style="width: 236px; height: 184px; display: block;"></canvas>
+        <!-- Google Maps Compass North Indicator -->
+        <div id="vc-radar-north" style="position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.95); border: 1.5px solid #dadce0; box-shadow: 0 2px 6px rgba(0,0,0,0.18); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem; color: #ea4335; pointer-events: none;">N</div>
+        <!-- Google Maps Brand Watermark -->
+        <div style="position: absolute; bottom: 4px; left: 8px; font-size: 0.62rem; font-weight: 800; color: rgba(0,0,0,0.45); pointer-events: none; font-family: Roboto, Arial, sans-serif;">Google</div>
+        <!-- Tooltip Hint Mở To -->
+        <div style="position: absolute; bottom: 4px; right: 8px; font-size: 0.62rem; font-weight: 800; background: rgba(0,0,0,0.65); color: #fff; padding: 1px 6px; border-radius: 999px; pointer-events: none;">🔍 Mở to (M)</div>
+      </div>
+
+      <!-- Quick Action Pills -->
+      <div style="display: flex; gap: 5px;">
+        <button id="btn-radar-walk" style="flex: 1; background: #ffffff; border: 1.5px solid #dadce0; color: #1a73e8; font-size: 0.72rem; font-weight: 800; padding: 6px 4px; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; justify-content: center; gap: 2px;">🛵 Lên Xe (F)</button>
+        <button id="btn-radar-cam" style="flex: 1.1; background: linear-gradient(135deg, #059669, #10b981); border: 1.5px solid #a7f3d0; color: #ffffff; font-size: 0.72rem; font-weight: 900; padding: 6px 4px; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 8px rgba(16,185,129,0.3); font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; justify-content: center; gap: 2px;" title="Đổi góc nhìn Camera 3D">📷 Góc Nhìn (C)</button>
+        <button id="btn-radar-fullmap" style="flex: 1; background: #ea4335; border: 1.5px solid #c5221f; color: #ffffff; font-size: 0.72rem; font-weight: 900; padding: 6px 4px; border-radius: 999px; cursor: pointer; box-shadow: 0 2px 8px rgba(234,67,53,0.3); font-family: 'Nunito', Arial, sans-serif; display: flex; align-items: center; justify-content: center; gap: 2px;">🗺️ Bản đồ (M)</button>
+      </div>
+    </div>
+
+    <!-- NPC SPEECH BUBBLE OVERLAY (KHI LẠI GẦN NGƯỜI DÂN HOẶC BẤM CÒI) -->
+    <div id="npc-speech-toast" style="display: none; position: absolute; bottom: 125px; left: 50%; transform: translateX(-50%); z-index: 99998; background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.96)); border: 2.5px solid #facc15; box-shadow: 0 12px 36px rgba(0,0,0,0.8), 0 0 20px rgba(250, 204, 21, 0.5); border-radius: 20px; padding: 12px 24px; color: #fff; font-family: 'Nunito', Arial, sans-serif; pointer-events: auto; max-width: 520px; align-items: center; gap: 14px;">
+      <div id="npc-toast-avatar" style="font-size: 2.2rem; flex-shrink: 0; background: rgba(255,255,255,0.1); width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #facc15;">🎒</div>
+      <div style="flex: 1; min-width: 0;">
+        <div id="npc-toast-name" style="font-size: 0.82rem; font-weight: 900; color: #facc15; text-transform: uppercase; letter-spacing: 0.5px;">HỌC SINH TIỂU HỌC NGÔ QUYỀN</div>
+        <div id="npc-toast-text" style="font-size: 0.95rem; font-weight: 700; color: #f8fafc; line-height: 1.35; margin-top: 2px;">"Em chào chị Hà My 5C4 ạ! Chị học tiếng Anh siêu đỉnh!"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTION BADGE KHI BÉ HÀ MY ĐI BỘ LẠI GẦN XE HONDA VISION NGOÀI CỔNG TRƯỜNG -->
+  <div id="bike-proximity-prompt" style="display: none; position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); z-index: 99999; background: linear-gradient(135deg, rgba(136, 19, 55, 0.96), rgba(225, 29, 72, 0.96)); border: 2.5px solid #fda4af; padding: 12px 28px; border-radius: 999px; color: #fff; font-family: 'Nunito', Arial, sans-serif; font-weight: 900; font-size: 1.05rem; box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 24px rgba(244,63,94,0.7); align-items: center; gap: 12px; pointer-events: auto; cursor: pointer;">
+    <span style="font-size: 1.5rem;">🛵</span>
+    <span>Bấm <strong>[F]</strong> hoặc <u>Chạm vào đây</u> để Ba chở Bé Hà My dạo phố Vĩnh Yên về nhà!</span>
+  </div>
+
+  <div class="app-container">
+    <!-- Header: Player Dashboard & Progression -->
+    <header class="player-dashboard">
+      <div class="player-info-group" title="Thông tin hiệp sĩ nhí">
+        <div class="player-avatar" id="player-avatar"><img src="chibi_ha_my.jpg" alt="Bé Hà My Chibi" class="chibi-avatar-img"></div>
+        <div class="player-rank-details">
+          <div class="player-name">
+            <span id="player-name-text">Hà My (5C4)</span>
+            <span class="player-rank-badge" id="player-rank-badge">Lv.1 Tập Sự Nhí 🥉</span>
+          </div>
+          <div class="exp-bar-container">
+            <div class="exp-fill" id="exp-fill"></div>
+          </div>
+          <div style="font-size: 0.75rem; color: #6b7280; font-weight: 700;" id="exp-text">0 / 50 EXP</div>
+        </div>
+      </div>
+
+      <div class="dashboard-stats">
+        <button class="btn-commute-bike" id="btn-commute-bike" title="Bung toàn màn hình lái xe Honda Vision đỏ mận khám phá thành phố Vĩnh Yên 1.2km!">🏙️ RA PHỐ LÁI XE (VĨNH YÊN 3D)</button>
+        <button class="btn-grammar-notebook" id="btn-grammar-notebook" title="Mở Sổ Tay Bí Kíp Ngữ Pháp Lớp 5">📖 Bí Kíp Lớp 5</button>
+        <button class="btn-reset-progress" id="btn-reset-progress" title="Đặt lại toàn bộ bài học và nhiệm vụ về 0 để con gái chơi từ đầu">🔄 Chơi Lại Từ Đầu</button>
+        <div class="stat-pill">
+          <span>⭐</span>
+          <span id="stars-display">0</span>
+        </div>
+        <button class="btn-icon-round" id="sound-toggle-btn" title="Bật/Tắt âm thanh">🔊</button>
+      </div>
+    </header>
+
+    <!-- Thanh chuyển đổi Hồ Sơ & Khối Lớp Riêng Biệt (Profiles & Grades) -->
+    <div class="grade-switcher-bar">
+      <div class="grade-switcher-title">
+        <span class="grade-switcher-icon">👤</span>
+        <span class="grade-switcher-label">Hồ Sơ & Khối Lớp:</span>
+      </div>
+      <div class="grade-tabs" id="grade-tabs-container">
+        <button class="grade-tab-btn" data-grade="grade1" title="Hồ sơ độc lập Bé Lớp 1">
+          <span class="tab-emoji">🐣</span>
+          <span class="tab-text-wrap">
+            <span class="tab-title">Bé Lớp 1</span>
+            <span class="tab-sub">Khởi Động Phonics & Chữ Cái</span>
+          </span>
+        </button>
+        <button class="grade-tab-btn" data-grade="grade2" title="Hồ sơ độc lập Bé Lớp 2">
+          <span class="tab-emoji">🦊</span>
+          <span class="tab-text-wrap">
+            <span class="tab-title">Bé Lớp 2</span>
+            <span class="tab-sub">Từ Vựng Cơ Bản & Giao Tiếp</span>
+          </span>
+        </button>
+        <button class="grade-tab-btn active" data-grade="grade5" title="Hồ sơ độc lập Hà My 5C4">
+          <span class="tab-badge">Đặc Biệt</span>
+          <span class="tab-emoji">👧</span>
+          <span class="tab-text-wrap">
+            <span class="tab-title">Hà My (5C4)</span>
+            <span class="tab-sub">Lớp 5 - Bổ Trợ Ngữ Pháp SGK</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Game Arena: World Map -> Island Mini-Map -> Stage -->
+    <main id="main-game-screen" class="main-screen-card">
+      <!-- Injected dynamically by game.js -->
+    </main>
+  </div>
+
+  <!-- Victory / Stage Complete Modal -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="victory-card">
+      <div class="victory-trophy">🏆</div>
+      <h2 id="victory-title">Tuyệt Vời Lắm Bé Ơi!</h2>
+      <div class="reward-pills">
+        <span class="reward-pill" id="victory-stars-count">+3 ⭐</span>
+        <span class="reward-pill" id="victory-exp-count">+30 EXP ⚡</span>
+      </div>
+      <p style="color: #4b5563; font-size: 0.95rem; font-weight: 600;" id="victory-msg">Bé đã vượt qua thử thách và tiến thêm 1 bước trên bản đồ!</p>
+      <button class="btn-victory-action" id="btn-victory-continue">Tiếp Tục Phiêu Lưu 🚀</button>
+    </div>
+  </div>
+
+  <!-- Grammar Notebook Modal (Sổ Tay Bí Kíp Ngữ Pháp Lớp 5) -->
+  <div class="modal-overlay" id="grammar-notebook-modal">
+    <div class="notebook-card">
+      <div class="notebook-header">
+        <div class="notebook-title-box">
+          <span style="font-size: 2.2rem;">📖</span>
+          <div>
+            <h3>SỔ TAY BÍ KÍP NGỮ PHÁP LỚP 5</h3>
+            <span class="notebook-sub">Bổ Trợ Global Success - Dành Riêng Cho Hà My 5C4</span>
+          </div>
+        </div>
+        <button class="btn-close-modal" id="btn-close-notebook">✖</button>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="notebook-tabs-nav">
+        <button class="nb-tab-btn active" data-nbtab="tobe">1. Động Từ To Be</button>
+        <button class="nb-tab-btn" data-nbtab="verbs">2. Hiện Tại Đơn</button>
+        <button class="nb-tab-btn" data-nbtab="ses">3. Thêm -S / -ES</button>
+        <button class="nb-tab-btn" data-nbtab="pronun">4. Phát Âm /s/ /iz/ /z/</button>
+        <button class="nb-tab-btn" data-nbtab="aux">5. Don't / Doesn't / Do / Does</button>
+        <button class="nb-tab-btn" data-nbtab="unit1">6. Unit 1: All About Me</button>
+        <button class="nb-tab-btn" data-nbtab="cont">7. Hiện Tại Tiếp Diễn</button>
+        <button class="nb-tab-btn" data-nbtab="freetime">8. Unit 2 & 4: Nơi Ở & Sở Thích</button>
+        <button class="nb-tab-btn" data-nbtab="past">9. Quá Khứ Đơn (Was/Were)</button>
+        <button class="nb-tab-btn" data-nbtab="school_trip">10. Unit 7 & 9: Trường Học & Bà Nà</button>
+      </div>
+
+      <!-- Tab Content Area -->
+      <div class="notebook-content-body" id="notebook-content-body">
+        <!-- Rendered dynamically by game.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       MODALS QUẢN LÝ KHUÔN VIÊN TRƯỜNG HỌC 5C4 (CAMPUS RPG)
+       ======================================================== -->
+  <!-- 1. Modal Nhiệm Vụ Xuân My -->
+  <div class="campus-modal-overlay" id="campus-quest-modal" style="display: none;">
+    <div class="campus-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">📜</span>
+          <div>
+            <h3>SỔ TAY NHIỆM VỤ LỚP 5C4 - XUÂN MY</h3>
+            <span class="campus-modal-sub">Hoàn thành nhiệm vụ mỗi ngày để nhận Xu thưởng & Quà độc quyền!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-quest-modal">✖</button>
+      </div>
+      <div class="quest-xuanmy-speech">
+        <div class="xuanmy-chibi-avatar">🎀</div>
+        <div class="xuanmy-speech-bubble">
+          "Chào bạn Hà My! Tớ là <strong>Xuân My</strong>, Trưởng Ban Sao Đỏ 5C4 đây! Cậu hãy làm nhiệm vụ để tích lũy thật nhiều Xu Vàng và Sao Tím nhé!"
+        </div>
+      </div>
+      <div class="campus-quest-categories" id="campus-quest-categories"></div>
+      <div class="campus-quest-list" id="campus-quest-list"></div>
+    </div>
+  </div>
+
+  <!-- 2. Modal Cửa Hàng Thời Trang & Thú Cưng -->
+  <div class="campus-modal-overlay" id="campus-shop-modal" style="display: none;">
+    <div class="campus-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">🛍️</span>
+          <div>
+            <h3>CỬA HÀNG THỜI TRANG & THÚ CƯNG 5C4</h3>
+            <span class="campus-modal-sub">Sắm váy áo xinh, rước pet cưng và ăn món ngon tại Căn Tin!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-shop-modal">✖</button>
+      </div>
+      <div class="shop-tabs-nav">
+        <button class="shop-tab-btn active" data-shoptab="outfits">👗 Thời Trang & Phụ Kiện</button>
+        <button class="shop-tab-btn" data-shoptab="pets">🐾 Thú Cưng Chibi</button>
+        <button class="shop-tab-btn" data-shoptab="canteen">🍔 Căn Tin Bác Bếp</button>
+      </div>
+      <div class="campus-shop-content" id="campus-shop-content"></div>
+    </div>
+  </div>
+
+  <!-- 3. Modal Gánh Ăn Vặt Cô Bảy Cổng Trường -->
+  <div class="campus-modal-overlay" id="campus-snack-modal" style="display: none;">
+    <div class="campus-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">🍢</span>
+          <div>
+            <h3>GÁNH QUÀ VẶT CÔ BẢY - CỔNG TRƯỜNG NGÔ QUYỀN</h3>
+            <span class="campus-modal-sub">Món ngon nóng hổi tiếp sức học tiếng Anh cùng Thầy Tuấn!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-snack-modal">✖</button>
+      </div>
+      <div class="cobay-speech-wrap">
+        <div class="cobay-avatar">🍢👵</div>
+        <div class="cobay-speech-bubble">
+          "Cô Bảy chào bé <strong>Hà My 5C4</strong> nghen! Học bài chăm chỉ mệt rồi đúng hông con? Lại đây cô Bảy đãi trà tắc, bánh tráng trộn, cá viên chiên giòn rụm nè! Dùng Xu thưởng để mua nghen con!"
+        </div>
+      </div>
+      <div class="snack-balance-bar">
+        <span>Ví tiền của bé:</span>
+        <span class="snack-balance-val"><strong id="snack-modal-coins">0</strong> 🪙 Xu Vàng</span>
+      </div>
+      <div class="campus-snack-body" id="campus-snack-body"></div>
+    </div>
+  </div>
+
+  <!-- 4. Modal Hồ Câu Cá Trường Ngô Quyền -->
+  <div class="campus-modal-overlay" id="campus-fishing-modal" style="display: none;">
+    <div class="campus-modal-card small-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">🎣</span>
+          <div>
+            <h3>HỒ CÂU CÁ TRƯỜNG NGÔ QUYỀN</h3>
+            <span class="campus-modal-sub">Trả lời đúng từ vựng tiếng Anh để câu được cá quý!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-fishing-modal">✖</button>
+      </div>
+      <div class="campus-fishing-body" id="campus-fishing-body"></div>
+    </div>
+  </div>
+
+  <!-- 5. Modal Bảng Xếp Hạng -->
+  <div class="campus-modal-overlay" id="campus-leaderboard-modal" style="display: none;">
+    <div class="campus-modal-card small-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">🏆</span>
+          <div>
+            <h3>BẢNG XẾP HẠNG TUẦN - LỚP 5C4</h3>
+            <span class="campus-modal-sub">Top học sinh xuất sắc nhất khuôn viên trường học!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-lb-modal">✖</button>
+      </div>
+      <div class="campus-leaderboard-list" id="campus-leaderboard-list"></div>
+    </div>
+  </div>
+
+  <!-- 6. Modal Sút Phạt Đền 11M -->
+  <div class="campus-modal-overlay" id="campus-penalty-modal" style="display: none;">
+    <div class="campus-modal-card penalty-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">⚽</span>
+          <div>
+            <h3>THÁCH ĐẤU SÚT PHẠT ĐỀN 11M - SÂN BÓNG 5C4</h3>
+            <span class="campus-modal-sub">Trả lời đúng câu hỏi tiếng Anh để sút bóng tung lưới Thủ Môn Robot!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-penalty-modal">✖</button>
+      </div>
+      <div class="penalty-body" id="campus-penalty-body"></div>
+    </div>
+  </div>
+
+  <!-- 7. Modal Lật Thẻ Trí Nhớ Thư Viện -->
+  <div class="campus-modal-overlay" id="campus-memory-modal" style="display: none;">
+    <div class="campus-modal-card memory-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">🃏</span>
+          <div>
+            <h3>LẬT THẺ TRÍ NHỚ TỪ VỰNG - THƯ VIỆN NGÔ QUYỀN</h3>
+            <span class="campus-modal-sub">Ghép đôi các cặp Động từ Quá khứ bất quy tắc cùng Cô Thủ Thư Huệ!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-memory-modal">✖</button>
+      </div>
+      <div class="memory-body" id="campus-memory-body"></div>
+    </div>
+  </div>
+
+  <!-- 8. Modal Đại Chiến Boss Ngữ Pháp (Dr. Mistake) -->
+  <div class="campus-modal-overlay" id="campus-boss-modal" style="display: none;">
+    <div class="campus-modal-card boss-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">⚔️</span>
+          <div>
+            <h3>ĐẠI CHIẾN BOSS NGỮ PHÁP - DR. MISTAKE</h3>
+            <span class="campus-modal-sub">Tìm và sửa lỗi sai trong câu để giáng sét đánh bại Giáo Sư Lỗi Sai!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-boss-modal">✖</button>
+      </div>
+      <div class="boss-body" id="campus-boss-body"></div>
+    </div>
+  </div>
+
+  <!-- 9. Modal Đấu Trường Vô Tận -->
+  <div class="campus-modal-overlay" id="campus-endless-modal" style="display: none;">
+    <div class="campus-modal-card endless-modal-card">
+      <div class="campus-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon">♾️</span>
+          <div>
+            <h3>ĐẤU TRƯỜNG VÔ TẬN & LUYỆN TẬP BẤT TẬN</h3>
+            <span class="campus-modal-sub">Thử thách không giới hạn, cày sao & nhân đôi combo điểm thưởng!</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-endless-modal">✖</button>
+      </div>
+      <div class="endless-body" id="campus-endless-body"></div>
+    </div>
+  </div>
+
+  <!-- 10. Modal Khảo Hạch Tiếng Anh Thiên Đình Tây Du Ký -->
+  <div class="campus-modal-overlay" id="campus-celestial-modal" style="display: none;">
+    <div class="campus-modal-card celestial-modal-card">
+      <div class="campus-modal-header celestial-modal-header">
+        <div class="campus-modal-title-box">
+          <span class="campus-modal-icon" id="celestial-npc-icon">🐒</span>
+          <div>
+            <h3 id="celestial-npc-title">TỀ THIÊN ĐẠI THÁNH TÔN NGỘ KHÔNG</h3>
+            <span class="campus-modal-sub" id="celestial-npc-subtitle">Đại Cung Điện Thiên Đình - Khảo Hạch Tiếng Anh Tiên Giới</span>
+          </div>
+        </div>
+        <button class="campus-modal-close" id="btn-close-celestial-modal">✖</button>
+      </div>
+
+      <div class="celestial-dialogue-banner">
+        <div class="celestial-avatar-glow" id="celestial-avatar-char">🐒</div>
+        <div class="celestial-speech-text" id="celestial-speech-content">
+          "Chào bé Hà My 5C4! Hãy vượt qua thử thách tiếng Anh của Lão Tôn để nhận bảo bối Cân Đẩu Vân nhé!"
+        </div>
+        <button class="btn-celestial-voice" id="btn-celestial-speak-en" title="Phát âm tiếng Anh chuẩn">🔊 Nghe</button>
+      </div>
+
+      <div class="celestial-quiz-area" id="celestial-quiz-area">
+        <div class="celestial-question-box" id="celestial-question-box">
+          <div class="celestial-q-tag" id="celestial-q-tag">CÂU ĐỐ TỪ VỰNG TIÊN GIỚI</div>
+          <div class="celestial-q-text" id="celestial-q-text">What is the English word for "Cân Đẩu Vân / Cloud"?</div>
+        </div>
+
+        <div class="celestial-options-grid" id="celestial-options-grid"></div>
+        <div class="celestial-feedback-box" id="celestial-feedback-box" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. Modal Phòng Học Toán 5C4 & Cô Mai -->
+  <div class="campus-modal-overlay" id="campus-math-classroom-modal" style="display: none;"></div>
+
+  <!-- 12. Modal Trò Chơi Dân Gian Ô Ăn Quan -->
+  <div class="campus-modal-overlay" id="campus-folk-game-modal" style="display: none;"></div>
+
+  <!-- 13. MODAL BẢN ĐỒ GOOGLE MAPS TOÀN MÀN HÌNH CHUẨN XÁC 100% (Phím M hoặc Click Radar) -->
+  <div id="google-maps-fullscreen-modal" style="display: none; position: fixed; inset: 0; z-index: 999999; background: rgba(15,23,42,0.88); backdrop-filter: blur(12px); justify-content: center; align-items: center; padding: 18px; box-sizing: border-box;">
+    <!-- Khung ứng dụng Google Maps -->
+    <div style="position: relative; width: 100%; max-width: 1260px; height: 92vh; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; border: 2px solid #dadce0;">
+      <!-- Thanh công cụ Google Maps trên cùng -->
+      <div style="background: #ffffff; border-bottom: 1.5px solid #dadce0; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06); z-index: 10;">
+        <div style="display: flex; align-items: center; gap: 14px; flex: 1;">
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: #ea4335; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.3rem; box-shadow: 0 4px 12px rgba(234,67,53,0.35);">📍</div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.2rem; font-weight: 900; color: #202124; font-family: 'Nunito', Arial, sans-serif;">GOOGLE MAPS VĨNH YÊN</span>
+              <span style="background: #e8f0fe; color: #1a73e8; font-weight: 800; font-size: 0.78rem; padding: 2px 10px; border-radius: 999px;">Tuyến đường 1.19 km • 3 phút</span>
+            </div>
+            <div style="font-size: 0.82rem; color: #5f6368; font-weight: 700;">Từ Trường Tiểu học Ngô Quyền (141 Trần Quốc Tuấn) ➔ Nhà Vườn Cây Cảnh VŨ DẬU</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="btn-gmaps-layer-toggle" style="background: #f1f3f4; border: 1.5px solid #dadce0; color: #202124; font-weight: 800; font-size: 0.82rem; padding: 7px 14px; border-radius: 999px; cursor: pointer; font-family: 'Nunito', Arial, sans-serif;">🗺️ Lớp: Bản đồ giao thông</button>
+          <button id="btn-gmaps-center-player" style="background: #e8f0fe; border: 1.5px solid #1a73e8; color: #1a73e8; font-weight: 800; font-size: 0.82rem; padding: 7px 14px; border-radius: 999px; cursor: pointer; font-family: 'Nunito', Arial, sans-serif;">🎯 Vị trí Bé Hà My</button>
+          <button id="btn-close-google-maps" style="background: #f1f3f4; border: none; width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem; font-weight: 900; color: #5f6368; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Đóng bản đồ (Esc hoặc M)">✕</button>
+        </div>
+      </div>
+
+      <!-- Thân bản đồ gồm Thanh chỉ dẫn bên trái & Canvas bản đồ bên phải -->
+      <div style="position: relative; flex: 1; display: flex; overflow: hidden;">
+        <!-- Cột chỉ dẫn từng chặng đường Google Maps bên trái -->
+        <div id="gmaps-sidebar-directions" style="width: 330px; background: #ffffff; border-right: 1.5px solid #dadce0; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; z-index: 5;">
+          <div style="padding: 14px 18px; border-bottom: 1px solid #f1f3f4; background: #f8f9fa;">
+            <div style="font-size: 0.84rem; font-weight: 900; color: #1a73e8; text-transform: uppercase;">Lộ trình chi tiết từng ngã rẽ</div>
+            <div style="font-size: 0.76rem; color: #5f6368; margin-top: 2px;">Bấm "⚡ Đến đây" để dịch chuyển tức thời</div>
+          </div>
+          <div id="gmaps-waypoint-list" style="flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+            <!-- JS tự động render các thẻ chặng đường -->
+          </div>
+        </div>
+
+        <!-- Khung Canvas tương tác bản đồ Google Maps bên phải -->
+        <div style="position: relative; flex: 1; height: 100%; overflow: hidden; background: #f1f3f4;">
+          <canvas id="google-maps-full-canvas" style="width: 100%; height: 100%; display: block; cursor: grab;"></canvas>
+          
+          <!-- Nút thu phóng (+ / -) ở góc dưới bên phải -->
+          <div style="position: absolute; right: 18px; bottom: 24px; display: flex; flex-direction: column; gap: 6px; z-index: 10;">
+            <button id="btn-gmaps-zoom-in" style="width: 40px; height: 40px; border-radius: 8px; background: #fff; border: 1.5px solid #dadce0; box-shadow: 0 2px 8px rgba(0,0,0,0.18); font-size: 1.4rem; font-weight: 900; color: #444; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
+            <button id="btn-gmaps-zoom-out" style="width: 40px; height: 40px; border-radius: 8px; background: #fff; border: 1.5px solid #dadce0; box-shadow: 0 2px 8px rgba(0,0,0,0.18); font-size: 1.4rem; font-weight: 900; color: #444; cursor: pointer; display: flex; align-items: center; justify-content: center;">−</button>
+          </div>
+
+          <!-- Kim chỉ hướng Bắc nổi -->
+          <div style="position: absolute; top: 16px; right: 18px; background: #fff; padding: 6px 14px; border-radius: 999px; border: 1.5px solid #dadce0; box-shadow: 0 2px 8px rgba(0,0,0,0.12); font-size: 0.8rem; font-weight: 900; color: #ea4335; display: flex; align-items: center; gap: 5px; font-family: 'Nunito', Arial, sans-serif;">
+            <span>⬆ BẮC (N)</span>
+          </div>
+
+          <!-- Google Watermark góc dưới trái -->
+          <div style="position: absolute; left: 18px; bottom: 12px; font-size: 0.88rem; font-weight: 900; color: rgba(0,0,0,0.45); pointer-events: none; font-family: Roboto, Arial, sans-serif;">Google</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="three.min.js?v=roblox3d"></script>
+  <script src="streetview_data.js?v=v53_real_phototextures_streetview"></script>
+  <script src="streetview_base64.js?v=v56_anime_rep1to1"></script>
+  <script src="streetview_360.js?v=v56_anime_rep1to1"></script>
+  <script src="campus_rpg.js?v=v56_anime_rep1to1"></script>
+  <script src="roblox_engine.js?v=v59_anime_polished_perfection"></script>
+  <script src="three_arena.js?v=v59_anime_polished_perfection"></script>
+  <script src="city_commute.js?v=v66_masterpiece_zero_occlusion"></script>
+  <script src="data.js?v=v59_anime_polished_perfection"></script>
+  <script src="audio_manifest.js?v=v59_anime_polished_perfection"></script>
+  <script src="game.js?v=v56_anime_rep1to1"></script>
+
+  <!-- MOBILE TOUCH HUD (CHO IPHONE / IPAD & MÀN HÌNH CẢM ỨNG) -->
+  <div id="mobile-touch-hud" class="mobile-touch-hud">
+    <!-- D-Pad di chuyển bên trái -->
+    <div class="mobile-dpad-container">
+      <div class="mobile-dpad-btn mobile-dpad-up" id="touch-btn-up">▲</div>
+      <div class="mobile-dpad-btn mobile-dpad-down" id="touch-btn-down">▼</div>
+      <div class="mobile-dpad-btn mobile-dpad-left" id="touch-btn-left">◀</div>
+      <div class="mobile-dpad-btn mobile-dpad-right" id="touch-btn-right">▶</div>
+    </div>
+
+    <!-- Nút hành động bên phải -->
+    <div class="mobile-actions-container">
+      <div class="mobile-action-row">
+        <button class="mobile-act-btn mobile-act-interact" id="touch-btn-interact">💬 Tương Tác</button>
+        <button class="mobile-act-btn mobile-act-cam" id="touch-btn-cam">📷 Camera</button>
+      </div>
+      <div class="mobile-action-row">
+        <button class="mobile-act-btn mobile-act-jump" id="touch-btn-jump">🦘 Nhảy</button>
+        <button class="mobile-act-btn mobile-act-mount" id="touch-btn-mount">🛵 Lên Xe</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Service Worker registration cho iPhone PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+
+    // Touch Controller Engine cho iPhone / iPad
+    (function initMobileTouchEngine() {
+      function getArena() { return window.Campus3DArenaInstance; }
+      function getCity() { return window.CityCommuteInstance; }
+
+      function setKey(dir, isDown) {
+        const arena = getArena();
+        const city = getCity();
+        if (city && city.isCityMode) {
+          if (dir === 'up') city.cityKeys.forward = isDown;
+          if (dir === 'down') city.cityKeys.backward = isDown;
+          if (dir === 'left') city.cityKeys.left = isDown;
+          if (dir === 'right') city.cityKeys.right = isDown;
+        } else if (arena && arena.keys) {
+          if (dir === 'up') arena.keys.w = isDown;
+          if (dir === 'down') arena.keys.s = isDown;
+          if (dir === 'left') arena.keys.a = isDown;
+          if (dir === 'right') arena.keys.d = isDown;
+        }
+      }
+
+      function wireTouchBtn(id, dir) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const down = (e) => { e.preventDefault(); el.classList.add('pressed'); setKey(dir, true); };
+        const up = (e) => { e.preventDefault(); el.classList.remove('pressed'); setKey(dir, false); };
+        el.addEventListener('touchstart', down, { passive: false });
+        el.addEventListener('touchend', up, { passive: false });
+        el.addEventListener('touchcancel', up, { passive: false });
+        el.addEventListener('mousedown', down);
+        el.addEventListener('mouseup', up);
+        el.addEventListener('mouseleave', up);
+      }
+
+      wireTouchBtn('touch-btn-up', 'up');
+      wireTouchBtn('touch-btn-down', 'down');
+      wireTouchBtn('touch-btn-left', 'left');
+      wireTouchBtn('touch-btn-right', 'right');
+
+      const btnInteract = document.getElementById('touch-btn-interact');
+      if (btnInteract) {
+        const handleInteract = (e) => {
+          e.preventDefault();
+          const city = getCity();
+          const arena = getArena();
+          if (city && city.isCityMode) {
+            city.interactNearby();
+          } else if (arena && typeof arena.triggerInteractionKey === 'function') {
+            arena.triggerInteractionKey();
+          }
+        };
+        btnInteract.addEventListener('touchstart', handleInteract, { passive: false });
+        btnInteract.addEventListener('click', handleInteract);
+      }
+
+      const btnJump = document.getElementById('touch-btn-jump');
+      if (btnJump) {
+        const handleJump = (e) => {
+          e.preventDefault();
+          const city = getCity();
+          const arena = getArena();
+          if (city && city.isCityMode) {
+            if (city.isMounted) {
+              city.bikeSpeed = Math.min(city.bikeMaxSpeed, city.bikeSpeed + 0.15);
+            } else if (typeof city.triggerWalkingJump === 'function') {
+              city.triggerWalkingJump();
+            }
+          } else if (arena && typeof arena.triggerSpaceAction === 'function') {
+            arena.triggerSpaceAction();
+          }
+        };
+        btnJump.addEventListener('touchstart', handleJump, { passive: false });
+        btnJump.addEventListener('click', handleJump);
+      }
+
+      const btnMount = document.getElementById('touch-btn-mount');
+      if (btnMount) {
+        const handleMount = (e) => {
+          e.preventDefault();
+          const city = getCity();
+          if (city && city.isCityMode) {
+            city.toggleMount();
+          } else if (city && typeof city.activateCityModeFromGate === 'function') {
+            const arena = getArena();
+            const posX = (arena && arena.studentMesh) ? arena.studentMesh.position.x : 0;
+            city.activateCityModeFromGate(posX, 56.5);
+          }
+        };
+        btnMount.addEventListener('touchstart', handleMount, { passive: false });
+        btnMount.addEventListener('click', handleMount);
+      }
+
+      const btnCam = document.getElementById('touch-btn-cam');
+      if (btnCam) {
+        const handleCam = (e) => {
+          e.preventDefault();
+          const city = getCity();
+          const arena = getArena();
+          if (city && city.isCityMode && typeof city.cycleCameraMode === 'function') {
+            city.cycleCameraMode();
+          } else if (arena && typeof arena.toggleCameraHeroView === 'function') {
+            arena.toggleCameraHeroView();
+          }
+        };
+        btnCam.addEventListener('touchstart', handleCam, { passive: false });
+        btnCam.addEventListener('click', handleCam);
+      }
+    })();
+  </script>
+</body>
+</html>

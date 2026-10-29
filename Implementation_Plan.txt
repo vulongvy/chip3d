@@ -1,0 +1,124 @@
+================================================================================
+   LỊCH TRÌNH CHỈNH SỬA & IMPLEMENTATION PLAN - CHIP 3D ADVENTURE
+   (Dành Cho Máy Tính Mới & Khởi Tạo Project Nhanh)
+================================================================================
+
+MỤC ĐÍCH:
+Mang thư mục này sang máy tính khác, hoặc nhân bản tạo project mới để tiếp tục
+"vibe code" trong vòng 1 phút mà không bị lỗi môi trường, lỗi đường dẫn hay CORS.
+
+--------------------------------------------------------------------------------
+1. CÁCH TẠO PROJECT MỚI SIÊU TỐC TRONG 30 GIÂY
+--------------------------------------------------------------------------------
+Cách 1 (Tự động 1-Click):
+  - Nhấp đúp vào file: TAO_PROJECT_MOI.bat
+  - Gõ tên thư mục project mới (Ví dụ: chip_lop6 hoặc my_city_3d).
+  - Script sẽ tự động sao chép mã nguồn sạch (~39MB) sang thư mục mới,
+    bỏ qua các file nặng >1GB.
+  - Bạn chỉ cần vào thư mục đó, nhấp đúp start_tool.bat là chạy ngay!
+
+Cách 2 (Dùng file nén):
+  - Giải nén file: dist\chip_english_adventure_lightweight.zip
+  - Đổi tên thư mục giải nén thành tên project của bạn.
+  - Nhấp đúp start_tool.bat.
+
+--------------------------------------------------------------------------------
+2. BẢN ĐỒ TỆP MÃ NGUỒN (SỬA GÌ THÌ MỞ FILE NÀO?)
+--------------------------------------------------------------------------------
+- data.js:
+    Ngân hàng câu hỏi Tiếng Anh Lớp 5 (GRADE_5_ISLANDS), từ vựng, gợi ý hint.
+- city_commute.js:
+    Thế giới 3D 1.19 km (Phố Trần Quốc Tuấn -> Ngô Quyền -> Lê Xoay -> Bưu Điện -> Vườn Vũ Dậu).
+    Nơi thêm/sửa cửa hàng, biển hiệu, xe máy Honda Vision, ô tô, cây xanh.
+- game.js:
+    Logic trò chơi: tính điểm, streak, nhân vật phát biểu, avatar, fallback voice.
+- three_arena.js:
+    Sân trường Tiểu Học Ngô Quyền và bục thi đấu A-B-C-D.
+- index.html & style.css:
+    Giao diện HUD, nút bấm, CSS Anime Studio Ghibli.
+- start_tool.bat & start_tool.py:
+    Bộ khởi động 1-click, máy chủ web nội bộ, tự động mở trình duyệt.
+- tools/generate_audio_edge.py:
+    Công cụ tự động sinh giọng đọc AI Neural (Microsoft Edge TTS) miễn phí.
+
+--------------------------------------------------------------------------------
+3. LỊCH TRÌNH CHỈNH SỬA TỪNG BƯỚC (STEP-BY-STEP SCHEDULE)
+--------------------------------------------------------------------------------
+
+[BƯỚC 1: Đổi tên nhân vật & thông tin trường lớp (15 phút)]
+  - Mở data.js và game.js:
+    Tìm chữ "Hà My" -> Đổi thành tên con bạn (VD: "Bảo Nam", "Gia Hân").
+    Tìm "Lớp 5C4", "Ngô Quyền" -> Đổi thành lớp và trường học của bạn.
+  - Thay ảnh đại diện:
+    Thay file chibi_ha_my.jpg bằng ảnh đại diện mới của con bạn (ảnh vuông).
+
+[BƯỚC 2: Soạn câu hỏi bài tập SGK mới (30 phút)]
+  - Mở data.js: Tìm mảng const GRADE_5_ISLANDS = [ ... ];
+  - Thêm hoặc sửa câu hỏi theo cấu trúc:
+    {
+      id: "g5_u11_q01",
+      question: "What's the matter with you? - I have a ______.",
+      options: ["headache", "toothache", "stomach ache", "fever"],
+      answer: 0,
+      teacherIntro: "Bé Hà My ơi, bạn trong tranh đang bị đau đầu kìa!",
+      teacherPraise: "Tuyệt vời! Headache chính là đau đầu!",
+      teacherCorrection: "Chưa đúng rồi, đau đầu là headache nhé con!"
+    }
+  - Cập nhật giọng đọc AI:
+    Chạy start_tool.bat -> chọn phím [2] để AI tự động đọc và lưu file âm thanh.
+
+[BƯỚC 3: Dựng thêm cửa hàng & biển hiệu 3D ven đường (45 phút)]
+  - Mở city_commute.js: Tìm hàm _buildDetailedSignboard(shop)
+  - Thêm cửa hàng mới vào mảng:
+    this._buildDetailedSignboard({
+      x: 10.5,           // Lề đường (dương là lề phải, âm là lề trái)
+      y: 4.8,            // Độ cao biển hiệu so với mặt đường
+      z: -285.0,         // Vị trí trên tuyến đường (0: Trường, -1190: Về nhà)
+      width: 5.2,        // Chiều rộng biển
+      height: 1.4,       // Chiều cao biển
+      rotY: Math.PI / 2, // Hướng xoay biển ra đường
+      title: "TIỆM TRÀ SỮA & BÁNH NGỌT",
+      sub: "ĂN VẶT HỌC SINH 5C4",
+      bg: "#ff9f43",     // Màu nền biển hiệu
+      textColor: "#ffffff"
+    });
+
+[BƯỚC 4: Thêm phương tiện giao thông trên đường (30 phút)]
+  - Mở city_commute.js: Tìm hàm _spawnTrafficCar()
+  - Ví dụ thêm xe Vios đậu lề đường:
+    this._spawnTrafficCar("sedan", -6.5, -150.0, 0);
+  - Thêm xe máy Wave trước cửa tiệm:
+    this._spawnTrafficCar("bike", 8.2, -60.0, Math.PI / 4);
+
+[BƯỚC 5: Tùy biến màu sắc bầu trời Anime (20 phút)]
+  - Mở city_commute.js: Tìm hàm _buildSkyDome()
+  - Chỉnh màu sắc gradient bầu trời và độ sáng ánh nắng (this.sunLight).
+
+--------------------------------------------------------------------------------
+4. BẢNG TỌA ĐỘ 1.19 KM ĐỂ CĂN CHỈNH VỊ TRÍ TRONG GAME
+--------------------------------------------------------------------------------
+- Z = +65  : Cổng Đình Cổ & Nhà bé Hà My (Khởi hành từ trường)
+- Z = +40  : Phố Trần Quốc Tuấn (Quán Phở Lý, Rèm Cửa, Mầm Non Hạnh Phúc)
+- Z = -120 : Ngã rẽ Phố Ngô Quyền (Tiệm Áo Dài Hoàng Gia, Vàng Bạc Hoàng Sơn)
+- Z = -285 : Số 24 Ngô Quyền (Tiệm Thời Trang Elise, Vàng Bạc, Xe Innova SUV)
+- Z = -500 : Ngã Ba Lê Xoay (Chăn Ga Gối Đệm Huyền Hậu, Đại Lý Vinamilk, Xe Vios)
+- Z = -900 : Vòng Xuyến Bùng Binh Kim Ngọc (Bưu Điện Tỉnh VNPT, Cột Tháp Hoa)
+- Z = -1190: Đích đến - Nhà Cây Cảnh Vũ Dậu (Vườn Bonsai, Bàn Trà Đá)
+
+--------------------------------------------------------------------------------
+5. PROMPT MẪU ĐỂ VIBE CODE VỚI AI TRÊN MÁY TÍNH MỚI
+--------------------------------------------------------------------------------
+(Copy đoạn văn bản dưới đây gửi cho ChatGPT, Claude, hoặc Cursor):
+
+"Chào bạn, tôi đang phát triển dự án Chip English Adventure & 3D City Commute
+viết bằng Three.js thuần (Vanilla JS, không dùng Webpack/Node build).
+- index.html: Giao diện và HUD anime Ghibli.
+- city_commute.js: Thế giới 3D 1.19 km (Trần Quốc Tuấn -> Ngô Quyền -> Lê Xoay -> Bưu Điện -> Vườn Vũ Dậu).
+- game.js: Logic câu hỏi SGK Lớp 5 và cơ chế phát âm thanh Fallback.
+- data.js: Ngân hàng câu hỏi SGK (mảng GRADE_5_ISLANDS).
+- start_tool.bat / start_tool.py: Máy chủ nội bộ hỗ trợ CORS, no-cache và tự tìm port.
+
+Yêu cầu phát triển mới của tôi:
+[ĐIỀN TÍNH NĂNG BẠN MUỐN THÊM VÀO ĐÂY]
+Hãy đọc code hiện tại và đưa ra giải pháp sửa trực tiếp giúp tôi nhé!"
+================================================================================
