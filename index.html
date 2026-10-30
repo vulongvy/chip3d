@@ -781,6 +781,7 @@
           if (r.width > 0 && vis > window.innerHeight * 0.35) on = true;
         }
         [hud, joyZone, faceBtn].forEach(el => { if (el) el.classList.toggle('chip-hud-on', on); });
+        if (typeof ensurePlazaFsBtn === 'function') ensurePlazaFsBtn();
       }
       setInterval(refreshHudVisibility, 700);
       refreshHudVisibility();
@@ -890,6 +891,25 @@
       if (xBtn) xBtn.addEventListener('click', closeMenu);
       window.ChipOpenMenu = openMenu;
       window.ChipCloseMenu = closeMenu;
+
+      // ---- [MOBILE-FIX-2] Nut Phong To cho san truong 3D o trang chu ----
+      // Khung san do game tu ve sau khi tai xong nen phai kiem tra lai lien tuc
+      function ensurePlazaFsBtn() {
+        const plazaVp = document.querySelector('.main-plaza-3d-viewport');
+        if (!plazaVp || plazaVp.querySelector('.chip-plaza-fs-btn')) return;
+        const fsBtn = document.createElement('button');
+        fsBtn.className = 'chip-plaza-fs-btn';
+        fsBtn.textContent = '⛶ Phóng To';
+        fsBtn.addEventListener('click', () => {
+          const on = plazaVp.classList.toggle('chip-plaza-full');
+          fsBtn.textContent = on ? '✕ Thu Nhỏ' : '⛶ Phóng To';
+          document.body.style.overflow = on ? 'hidden' : '';
+          setTimeout(refreshHudVisibility, 80);
+          window.dispatchEvent(new Event('resize'));
+        });
+        plazaVp.appendChild(fsBtn);
+      }
+      ensurePlazaFsBtn();
       if (window.CampusQuestInstance && typeof window.CampusQuestInstance.onChange === 'function') {
         window.CampusQuestInstance.onChange(() => { if (sheet.classList.contains('open')) { renderQuests(); renderHeader(); } });
       }
