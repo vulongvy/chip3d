@@ -7079,3 +7079,19 @@ body.chip-modal-open .chip-joystick-zone {
   .hud-hint-modal { width: min(92vw, 480px); max-height: calc(100dvh - 24px); overflow-y: auto; }
   .hud-hint-close-btn { min-width: 40px; min-height: 40px; }
 }
+
+/* ==============================================================
+   [MOBILE-FIX-3 30/10] HUD PHONG HOC "SACH" CHO DIEN THOAI
+   Bo het cac bang phu che canh khi dang lam bai: cot nut chuc
+   nang ben phai (da co trong Menu o san), bang dieu huong nhiem
+   vu o giua, ban do khuon vien. Chi giu: cau hoi, nut Thoat,
+   joystick va cac nut hanh dong.
+   ============================================================== */
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) and (max-height: 500px),
+       (orientation: landscape) and (max-height: 500px) and (max-width: 1024px) {
+  .hud-actions-bar { display: none !important; }
+  .hud-quest-navigator { display: none !important; }
+  .hud-minimap-wrap { display: none !important; }
+  .hud-teacher-card { max-width: 40vw; }
+  .hud-teacher-speech { max-height: 34px; }
+}

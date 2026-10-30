@@ -45,5 +45,10 @@
         <key>NSAllowsLocalNetworking</key>
         <true/>
     </dict>
+    <!-- [MOBILE-FIX-3] Khai bao man hinh khoi dong: thieu khoa nay iOS chay app
+         o che do tuong thich do phan giai cu (letterbox, co vien den, hinh bi
+         phong to mo) thay vi do phan giai goc toan man hinh cua may -->
+    <key>UILaunchScreen</key>
+    <dict/>
 </dict>
 </plist>

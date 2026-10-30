@@ -215,9 +215,10 @@ class RobloxClassroom3D {
     // [MOBILE-FIX-3] Dien thoai cam ung: ha do phan giai render xuong 1.5x va
     // dung bong do nhe hon de het giat (desktop giu nguyen 2x + bong mem)
     const chipCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, chipCoarsePointer ? 1.5 : 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, chipCoarsePointer ? 1.25 : 2));
     this.renderer.setClearColor(0x38bdf8, 1.0);
-    this.renderer.shadowMap.enabled = true;
+    // [MOBILE-FIX-3] Dien thoai: tat han bong do (nang gan nhu render lai canh)
+    this.renderer.shadowMap.enabled = !chipCoarsePointer;
     this.renderer.shadowMap.type = chipCoarsePointer ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.96;
@@ -239,7 +240,7 @@ class RobloxClassroom3D {
 
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 0.85);
     sunLight.position.set(50, 100, 48);
-    sunLight.castShadow = true;
+    sunLight.castShadow = !chipCoarsePointer;
     sunLight.shadow.mapSize.width = chipCoarsePointer ? 1024 : 2048;
     sunLight.shadow.mapSize.height = chipCoarsePointer ? 1024 : 2048;
     sunLight.shadow.camera.near = 0.5;

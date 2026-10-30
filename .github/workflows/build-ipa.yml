@@ -21,7 +21,9 @@ jobs:
 
       - name: Prepare Web Assets for iOS
         run: |
-          python3 tools/prepare_ios_assets.py
+          # [AUDIO-FIX] Kem theo toan bo giong Quang Minh ghi san (audio/quang_minh).
+          # Thieu co nay app chi con giong TTS cua may doc thay -> sai giong.
+          python3 tools/prepare_ios_assets.py --with-audio
 
       - name: Install XcodeGen
         run: |
