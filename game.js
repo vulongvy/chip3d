@@ -2807,8 +2807,8 @@ class ChipGameEngine {
             if (toast) toast.style.display = 'none';
           }
 
-          // Vẽ Radar Minimap
-          if (this.minimap && this.active3DArena.studentMesh) {
+          // Vẽ Radar Minimap ([MOBILE-FIX] chi ve khi ban do dang hien, tranh ton CPU ve vao canvas an)
+          if (this.minimap && this.active3DArena.studentMesh && this.minimap.canvas && this.minimap.canvas.offsetParent !== null) {
             this.minimap.render(this.active3DArena.studentMesh.position, this.active3DArena.studentMesh.rotation.y);
           }
         };

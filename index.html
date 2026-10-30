@@ -710,6 +710,38 @@
     // [MOBILE-FIX] JOYSTICK + NUT MAT NHAN VAT + MENU SHEET
     // ============================================================
     (function chipMobileUI() {
+      // ---- [MOBILE-FIX-5] Khoa nhip 60fps tren man 120Hz (ProMotion) ----
+      // Game thiet ke chay 60 khung/giay (chuyen dong tinh theo frame).
+      // Man 120Hz khien trinh duyet goi vong lap gap doi -> game vua chay
+      // nhanh hon thiet ke, vua ton gap doi CPU/GPU, lai rot nhip lien tuc
+      // (120->60->30) nen giat. Neu phat hien nhip ~8ms thi chia doi:
+      // moi callback chi chay o tick chan, dung lai dung 60 lan/giay.
+      // Man 60Hz (nhip ~16.7ms) thi khong dung vao gi ca.
+      if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches && !window.__chipRafDivided) {
+        window.__chipRafDivided = true;
+        const rawRaf = window.requestAnimationFrame.bind(window);
+        const states = new WeakMap();
+        let lastT = 0, fastStreak = 0, engaged = false;
+        window.requestAnimationFrame = function (cb) {
+          return rawRaf(function (t) {
+            if (!engaged) {
+              if (t > lastT) {
+                const d = t - lastT;
+                if (d > 4 && d < 12) { if (++fastStreak >= 8) engaged = true; }
+                else fastStreak = 0;
+                lastT = t;
+              }
+              return cb(t);
+            }
+            let s = states.get(cb);
+            if (!s) { s = { n: 0 }; states.set(cb, s); }
+            s.n++;
+            if (s.n % 2 === 1) { window.requestAnimationFrame(cb); return; }
+            cb(t);
+          });
+        };
+      }
+
       const hud = document.getElementById('mobile-touch-hud');
       const joyZone = document.getElementById('chip-joystick');
       const joyKnob = document.getElementById('chip-joystick-knob');
@@ -929,6 +961,30 @@
         plazaVp.appendChild(fsBtn);
       }
       ensurePlazaFsBtn();
+
+      // ---- [MOBILE-FIX-4] The thay giao: thu gon mac dinh, chi bung ra khi thay noi ----
+      let chipTeacherTimer = null;
+      function wireTeacherCard() {
+        const card = document.getElementById('hud-teacher-card');
+        if (!card || card.dataset.chipWired) return;
+        card.dataset.chipWired = '1';
+        card.classList.add('chip-speech-hidden');
+        const speech = document.getElementById('teacher-speech-box');
+        const showSpeech = () => {
+          card.classList.remove('chip-speech-hidden');
+          if (chipTeacherTimer) clearTimeout(chipTeacherTimer);
+          chipTeacherTimer = setTimeout(() => card.classList.add('chip-speech-hidden'), 8000);
+        };
+        if (speech) {
+          new MutationObserver(showSpeech).observe(speech, { childList: true, characterData: true, subtree: true });
+        }
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return;
+          if (card.classList.contains('chip-speech-hidden')) showSpeech();
+          else card.classList.add('chip-speech-hidden');
+        });
+      }
+      setInterval(wireTeacherCard, 900);
       if (window.CampusQuestInstance && typeof window.CampusQuestInstance.onChange === 'function') {
         window.CampusQuestInstance.onChange(() => { if (sheet.classList.contains('open')) { renderQuests(); renderHeader(); } });
       }

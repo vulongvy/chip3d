@@ -7095,3 +7095,25 @@ body.chip-modal-open .chip-joystick-zone {
   .hud-teacher-card { max-width: 40vw; }
   .hud-teacher-speech { max-height: 34px; }
 }
+
+/* ==============================================================
+   [MOBILE-FIX-4 30/10] CAT LOP MO KHOI CANVAS 3D + THE THAY GIAO THU GON
+   - backdrop-filter (44 cho trong file goc) buoc GPU cua iPhone phai
+     lam mo lai nen sau canvas moi frame -> giat nang du may manh.
+     Tren cam ung: tat het, panel dung nen dac trong suot thay the.
+   - The thay giao trong phong hoc: mac dinh thu gon (an hop thoai
+     dai), chi bung ra khi thay noi cau moi hoac be bam vao the.
+   ============================================================== */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+.hud-teacher-card.chip-speech-hidden .hud-teacher-speech {
+  display: none;
+}
+.hud-teacher-card.chip-speech-hidden {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
