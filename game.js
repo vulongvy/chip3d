@@ -6196,7 +6196,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (sheet && sheet.classList.contains('open')) anyOpen = true;
     document.body.classList.toggle('chip-modal-open', anyOpen);
   }
-  const mo = new MutationObserver(syncModalBodyClass);
-  mo.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'], subtree: true });
+  // [MOBILE-FIX-3] Kiem tra dinh ky nhe thay cho MutationObserver theo doi
+  // toan bo DOM (ban truoc gay giat tren dien thoai vi game cap nhat HUD lien tuc)
+  setInterval(syncModalBodyClass, 900);
   syncModalBodyClass();
 });

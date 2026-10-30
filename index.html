@@ -896,7 +896,26 @@
       // Khung san do game tu ve sau khi tai xong nen phai kiem tra lai lien tuc
       function ensurePlazaFsBtn() {
         const plazaVp = document.querySelector('.main-plaza-3d-viewport');
-        if (!plazaVp || plazaVp.querySelector('.chip-plaza-fs-btn')) return;
+        if (!plazaVp) return;
+        if (!plazaVp.dataset.chipAutoFs) {
+          plazaVp.dataset.chipAutoFs = '1';
+          // [MOBILE-FIX-3] Tu fullscreen khi be cham vao san de choi
+          // (chi khi khung san da chiem hon nua man hinh, tranh bat nham luc cuon trang)
+          plazaVp.addEventListener('pointerdown', (e) => {
+            if (!e.target || e.target.tagName !== 'CANVAS') return;
+            if (plazaVp.classList.contains('chip-plaza-full')) return;
+            const r = plazaVp.getBoundingClientRect();
+            const vis = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+            if (vis < window.innerHeight * 0.5) return;
+            plazaVp.classList.add('chip-plaza-full');
+            const b = plazaVp.querySelector('.chip-plaza-fs-btn');
+            if (b) b.textContent = '✕ Thu Nhỏ';
+            document.body.style.overflow = 'hidden';
+            setTimeout(refreshHudVisibility, 80);
+            window.dispatchEvent(new Event('resize'));
+          });
+        }
+        if (plazaVp.querySelector('.chip-plaza-fs-btn')) return;
         const fsBtn = document.createElement('button');
         fsBtn.className = 'chip-plaza-fs-btn';
         fsBtn.textContent = '⛶ Phóng To';

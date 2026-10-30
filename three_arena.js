@@ -212,10 +212,13 @@ class RobloxClassroom3D {
     // 3. WebGL Renderer - Đồ họa siêu nét, tương phản cao, triệt tiêu 100% lớp mờ trắng
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
     this.renderer.setSize(width, height);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // [MOBILE-FIX-3] Dien thoai cam ung: ha do phan giai render xuong 1.5x va
+    // dung bong do nhe hon de het giat (desktop giu nguyen 2x + bong mem)
+    const chipCoarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, chipCoarsePointer ? 1.5 : 2));
     this.renderer.setClearColor(0x38bdf8, 1.0);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = chipCoarsePointer ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 0.96;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
@@ -237,8 +240,8 @@ class RobloxClassroom3D {
     const sunLight = new THREE.DirectionalLight(0xfffbeb, 0.85);
     sunLight.position.set(50, 100, 48);
     sunLight.castShadow = true;
-    sunLight.shadow.mapSize.width = 2048;
-    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.mapSize.width = chipCoarsePointer ? 1024 : 2048;
+    sunLight.shadow.mapSize.height = chipCoarsePointer ? 1024 : 2048;
     sunLight.shadow.camera.near = 0.5;
     sunLight.shadow.camera.far = 300;
     sunLight.shadow.camera.left = -95;
