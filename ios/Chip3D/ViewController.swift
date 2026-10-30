@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import AVFoundation
 
 class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var webView: WKWebView!
@@ -15,6 +16,17 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 0.22, green: 0.74, blue: 0.97, alpha: 1.0)
+
+        // [MOBILE-FIX-6] WKWebView mac dinh bi iPhone tat tieng khi may de cong tac
+        // im lang (silent switch) -> mat ca nhac nen lan giong doc du file am thanh
+        // nam ngay trong app. Dat AVAudioSession sang .playback nhu moi game khac
+        // de am thanh game phat binh thuong bat ke cong tac im lang.
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            print("Khong dat duoc AVAudioSession: \(error)")
+        }
 
         setupWebView()
         loadWebContent()

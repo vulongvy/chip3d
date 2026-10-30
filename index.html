@@ -985,6 +985,82 @@
         });
       }
       setInterval(wireTeacherCard, 900);
+
+      // ---- [MOBILE-FIX-6] Mo khoa am thanh: danh thuc BGM + giong doc khi be cham ----
+      // iOS treo AudioContext cua nhac nen neu no khoi dong ngoai thao tac cham;
+      // moi lan cham, neu context dang treo thi resume lai. Lan cham dau tien
+      // phat 1 doan im lang de mo khoa san kenh phat tieng + TTS cho ca phien.
+      let chipPrimed = false;
+      function chipAudioUnlock() {
+        const app = window.chipApp;
+        if (app && app.bgm) {
+          try {
+            if (app.bgm.initContext) app.bgm.initContext();
+            if (app.bgm.ctx && app.bgm.ctx.state === 'suspended') app.bgm.ctx.resume();
+          } catch (e) {}
+        }
+        if (chipPrimed) return;
+        chipPrimed = true;
+        try {
+          const a = new Audio('data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYyLjEyLjEwMgAAAAAAAAAAAAAA//NwwAAAAAAAAAAAAEluZm8AAAAPAAAADgAABP8ANDQ0NDQ0NENDQ0NDQ0NTU1NTU1NTY2NjY2NjY3JycnJycnKCgoKCgoKCkpKSkpKSkqGhoaGhoaGhsbGxsbGxscHBwcHBwcHQ0NDQ0NDQ4ODg4ODg4PDw8PDw8PD/////////AAAAAExhdmM2Mi4yOAAAAAAAAAAAAAAAACQDaQAAAAAAAAT/lcfcyQAAAAAAAAAAAAAAAAD/8zDEAAAAA0gAAAAATEFNRVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8zLEQQAAA0gAAAAAVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//MwxIMAAANIAAAAAFVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//MyxL0AAANIAAAAAFVVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zMMS+AAADSAAAAABVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zMMS+AAADSAAAAABVVVVVVVVMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zMsS9AAADSAAAAABVVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8zDEvgAAA0gAAAAAVVVVVVVVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8zDEvgAAA0gAAAAAVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/8zLEvQAAA0gAAAAAVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//MwxL4AAANIAAAAAFVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//MyxL0AAANIAAAAAFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zMMS+AAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zMMS+AAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==');
+          a.volume = 0;
+          const pr = a.play();
+          if (pr && pr.catch) pr.catch(() => {});
+        } catch (e) {}
+        try {
+          if ('speechSynthesis' in window) {
+            const u = new SpeechSynthesisUtterance(' ');
+            u.volume = 0;
+            window.speechSynthesis.speak(u);
+          }
+        } catch (e) {}
+      }
+      window.addEventListener('pointerdown', chipAudioUnlock, true);
+
+      // ---- [MOBILE-FIX-6] Bang xe ngoai pho: thu gon mac dinh, cham de mo ----
+      function wireVehicleHud() {
+        const hud = document.getElementById('vision-bike-hud');
+        if (!hud || hud.dataset.chipWired) return;
+        hud.dataset.chipWired = '1';
+        hud.classList.add('chip-vh-collapsed');
+        hud.addEventListener('click', (e) => {
+          if (e.target.closest('button')) return;
+          hud.classList.toggle('chip-vh-collapsed');
+        });
+      }
+      setInterval(wireVehicleHud, 900);
+
+      // ---- [MOBILE-FIX-6] Danh dau dang o ngoai pho de an nut MENU trung lap ----
+      setInterval(() => {
+        const vp = document.getElementById('vice-city-fullscreen-viewport');
+        const on = !!vp && vp.style.display !== 'none';
+        document.body.classList.toggle('chip-city-on', on);
+      }, 800);
+
+      // ---- [MOBILE-FIX-6] Cat bot den trong canh 3D tren mobile ----
+      // Canh goc co ~38 den; moi den diem/spot lam shader cua moi vat the
+      // nang them. Giu toi da 8 den diem/spot, phan con lai tat (den huong
+      // sang chinh + den moi truong giu nguyen). Canh thay doi thi chay lai.
+      let chipLastArena = null, chipLastLightTotal = -1;
+      function chipCapLights() {
+        if (!window.matchMedia || !window.matchMedia('(pointer: coarse)').matches) return;
+        const arena = window.Campus3DArenaInstance;
+        if (!arena || !arena.scene) return;
+        const lights = [];
+        arena.scene.traverse(o => { if (o.isLight) lights.push(o); });
+        if (arena === chipLastArena && lights.length === chipLastLightTotal) return;
+        chipLastArena = arena;
+        chipLastLightTotal = lights.length;
+        if (lights.length <= 14) return;
+        let kept = 0;
+        lights.forEach(l => {
+          if (l.isPointLight || l.isSpotLight) {
+            kept++;
+            if (kept > 8) l.visible = false;
+          }
+        });
+      }
+      setInterval(chipCapLights, 1500);
       if (window.CampusQuestInstance && typeof window.CampusQuestInstance.onChange === 'function') {
         window.CampusQuestInstance.onChange(() => { if (sheet.classList.contains('open')) { renderQuests(); renderHeader(); } });
       }

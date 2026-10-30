@@ -7117,3 +7117,43 @@ body.chip-modal-open .chip-joystick-zone {
   padding-top: 5px;
   padding-bottom: 5px;
 }
+
+/* ==============================================================
+   [MOBILE-FIX-5 30/10] HUD PHO (VICE CITY) GON + BANG XE THU GON
+   - Radar Google Maps: thu nho 0.58 va doi len goc trai-tren,
+     tranh dung joystick o goc duoi-trai.
+   - Thanh chi duong: gioi han chieu rong, khong tran ca man hinh.
+   - An thanh goi y ban phim WASD tren may cam ung (vo dung).
+   - Bang xe #vision-bike-hud: hep con 248px, mac dinh thu gon
+     (an hang nut chuc nang + luoi dich chuyen), cham vao bang
+     de mo ra khi can.
+   ============================================================== */
+@media (hover: none) and (pointer: coarse) {
+  #vice-city-radar-container {
+    top: 118px !important;
+    bottom: auto !important;
+    left: 10px !important;
+    transform: scale(0.58);
+    transform-origin: top left;
+  }
+  #gmaps-top-instruction {
+    max-width: 34vw !important;
+  }
+  #gmaps-top-text {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #vice-city-fullscreen-viewport > div:first-of-type > div:last-child {
+    display: none !important;
+  }
+  #vision-bike-hud {
+    width: 248px !important;
+  }
+  body.chip-city-on #chip-face-btn {
+    display: none !important;
+  }
+}
+#vision-bike-hud.chip-vh-collapsed .v-btn-row,
+#vision-bike-hud.chip-vh-collapsed .v-teleport-grid {
+  display: none !important;
+}
