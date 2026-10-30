@@ -36,8 +36,12 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         webView.uiDelegate = self
         webView.isOpaque = false
         webView.backgroundColor = .clear
-        webView.scrollView.isScrollEnabled = false
-        webView.scrollView.bounces = false
+        // [MOBILE-FIX] Cho phép cuộn trang chủ/menu: trước đây khoá cứng khiến nội dung
+        // dài hơn màn hình ngang bị cắt và người dùng kẹt ở khung hình đầu tiên.
+        // Các chế độ 3D toàn màn hình tự khoá cuộn bằng CSS (overflow:hidden + 100dvh)
+        // ở phía web nên không bị ảnh hưởng.
+        webView.scrollView.isScrollEnabled = true
+        webView.scrollView.bounces = true
         webView.scrollView.contentInsetAdjustmentBehavior = .never
 
         view.addSubview(webView)
@@ -54,5 +58,68 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         } else {
             print("❌ Không tìm thấy index.html trong Bundle!")
         }
+    }
+
+    // MARK: - WKUIDelegate: JavaScript alert / confirm / prompt
+    // [MOBILE-FIX] Trước đây class nhận WKUIDelegate nhưng không cài đặt các hàm này,
+    // nên mọi alert()/confirm()/prompt() trong game (vd nút "Chơi Lại Từ Đầu" dùng
+    // window.confirm) đều im lặng chết trên iOS.
+
+    func webView(_ webView: WKWebView,
+                 runJavaScriptAlertPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping () -> Void) {
+        presentJSPanel(title: nil, message: message, buttons: [
+            (title: "OK", style: .default, value: true)
+        ]) { _ in completionHandler() }
+    }
+
+    func webView(_ webView: WKWebView,
+                 runJavaScriptConfirmPanelWithMessage message: String,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping (Bool) -> Void) {
+        presentJSPanel(title: nil, message: message, buttons: [
+            (title: "Huỷ", style: .cancel, value: false),
+            (title: "Đồng ý", style: .default, value: true)
+        ]) { completionHandler($0) }
+    }
+
+    func webView(_ webView: WKWebView,
+                 runJavaScriptTextInputPanelWithPrompt prompt: String,
+                 defaultText: String?,
+                 initiatedByFrame frame: WKFrameInfo,
+                 completionHandler: @escaping (String?) -> Void) {
+        guard isViewLoaded, view.window != nil, presentedViewController == nil else {
+            completionHandler(nil)
+            return
+        }
+        let alert = UIAlertController(title: nil, message: prompt, preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.text = defaultText
+        }
+        alert.addAction(UIAlertAction(title: "Huỷ", style: .cancel) { _ in
+            completionHandler(nil)
+        })
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            completionHandler(alert.textFields?.first?.text)
+        })
+        present(alert, animated: true)
+    }
+
+    private func presentJSPanel(title: String?,
+                                message: String,
+                                buttons: [(title: String, style: UIAlertAction.Style, value: Bool)],
+                                completion: @escaping (Bool) -> Void) {
+        guard isViewLoaded, view.window != nil, presentedViewController == nil else {
+            completion(buttons.last?.value ?? false)
+            return
+        }
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        for button in buttons {
+            alert.addAction(UIAlertAction(title: button.title, style: button.style) { _ in
+                completion(button.value)
+            })
+        }
+        present(alert, animated: true)
     }
 }

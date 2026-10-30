@@ -7866,6 +7866,27 @@
 
       window.addEventListener('touchend', onEnd);
 
+      // [MOBILE-FIX] Pinch 2 ngon tay de phong to / thu nho camera khi o trong pho
+      let cityPinchDist = null;
+      window.addEventListener('touchstart', (e) => {
+        if (!this.isCityMode) return;
+        if (e.touches.length === 2) {
+          cityPinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+          onEnd();
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!this.isCityMode || e.touches.length !== 2 || !cityPinchDist) return;
+        const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        this.cameraDistOffset = Math.max(-2.5, Math.min(8.0, (this.cameraDistOffset || 0) + (cityPinchDist - d) * 0.01));
+        cityPinchDist = d;
+      }, { passive: true });
+
+      window.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) cityPinchDist = null;
+      });
+
       window.addEventListener('wheel', (e) => {
         if (!this.isCityMode) return;
         if (e.target.closest('#vice-city-radar-container, #vision-bike-hud')) return;

@@ -473,6 +473,35 @@ class StreetView360Viewer {
       this.targetFov = Math.max(35, Math.min(95, this.targetFov));
     }, { passive: false });
 
+    // [MOBILE-FIX] Pinch 2 ngon tay de phong to / thu nho (thay con lan chuot)
+    const svPointers = new Map();
+    let svPinchDist = null;
+    this.canvas.addEventListener('pointerdown', (e) => {
+      svPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (svPointers.size === 2) {
+        const pts = [...svPointers.values()];
+        svPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        this.isUserInteracting = false;
+      }
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!svPointers.has(e.pointerId)) return;
+      svPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (svPointers.size === 2 && svPinchDist) {
+        const pts = [...svPointers.values()];
+        const d = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        this.targetFov += (svPinchDist - d) * 0.08;
+        this.targetFov = Math.max(35, Math.min(95, this.targetFov));
+        svPinchDist = d;
+      }
+    });
+    const svClearPointer = (e) => {
+      svPointers.delete(e.pointerId);
+      if (svPointers.size < 2) svPinchDist = null;
+    };
+    window.addEventListener('pointerup', svClearPointer);
+    window.addEventListener('pointercancel', svClearPointer);
+
     // Phím tắt bàn phím
     window.addEventListener('keydown', (e) => {
       if (!this.isOpen) return;

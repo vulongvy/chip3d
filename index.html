@@ -552,6 +552,41 @@
     </div>
   </div>
 
+  <!-- [MOBILE-FIX] JOYSTICK ANALOG (trai duoi) -->
+  <div id="chip-joystick" class="chip-joystick-zone">
+    <div class="chip-joystick-base"></div>
+    <div class="chip-joystick-knob" id="chip-joystick-knob"></div>
+    <div class="chip-joystick-label">DI CHUYỂN</div>
+  </div>
+
+  <!-- [MOBILE-FIX] NUT MAT NHAN VAT MO MENU (trai tren) -->
+  <button id="chip-face-btn" class="chip-hud-face" aria-label="Mở menu">
+    <span class="chip-face-circ"><img src="chibi_ha_my.jpg" alt="Nhân vật"></span>
+    <span class="chip-face-lab">MENU</span>
+  </button>
+
+  <!-- [MOBILE-FIX] MENU SHEET: CHUC NANG + NHIEM VU -->
+  <div id="chip-menu-overlay" class="chip-menu-overlay"></div>
+  <div id="chip-menu-sheet" class="chip-menu-sheet" role="dialog" aria-modal="true">
+    <div class="chip-menu-grab"></div>
+    <div class="chip-menu-head">
+      <div class="chip-menu-ava"><img src="chibi_ha_my.jpg" alt="Nhân vật"></div>
+      <div>
+        <div class="chip-menu-ttl">MENU &amp; NHIỆM VỤ</div>
+        <div class="chip-menu-sub" id="chip-menu-player">Hà My (5C4)</div>
+      </div>
+      <div style="flex:1"></div>
+      <div class="chip-menu-coin" id="chip-menu-coins">🪙 0 Xu Vàng</div>
+      <button class="chip-menu-x" id="chip-menu-close" aria-label="Đóng menu">✕</button>
+    </div>
+    <div class="chip-menu-body">
+      <div class="chip-menu-sect">🎮 CHỨC NĂNG — BẤM LÀ MỞ ĐÚNG 1 CỬA SỔ</div>
+      <div class="chip-menu-grid" id="chip-menu-grid"></div>
+      <div class="chip-menu-sect">📋 NHIỆM VỤ — TIẾN ĐỘ THẬT TRONG GAME</div>
+      <div id="chip-menu-quests"></div>
+    </div>
+  </div>
+
   <script>
     // Service Worker registration cho iPhone PWA
     if ('serviceWorker' in navigator) {
@@ -574,10 +609,12 @@
           if (dir === 'left') city.cityKeys.left = isDown;
           if (dir === 'right') city.cityKeys.right = isDown;
         } else if (arena && arena.keys) {
-          if (dir === 'up') arena.keys.w = isDown;
-          if (dir === 'down') arena.keys.s = isDown;
-          if (dir === 'left') arena.keys.a = isDown;
-          if (dir === 'right') arena.keys.d = isDown;
+          // [MOBILE-FIX] Engine RobloxClassroom3D chi doc forward/backward/left/right.
+          // Ban cu ghi w/s/a/d (truong chet) nen D-Pad o Campus khong an.
+          if (dir === 'up') arena.keys.forward = isDown;
+          if (dir === 'down') arena.keys.backward = isDown;
+          if (dir === 'left') arena.keys.left = isDown;
+          if (dir === 'right') arena.keys.right = isDown;
         }
       }
 
@@ -666,6 +703,195 @@
         };
         btnCam.addEventListener('touchstart', handleCam, { passive: false });
         btnCam.addEventListener('click', handleCam);
+      }
+    })();
+
+    // ============================================================
+    // [MOBILE-FIX] JOYSTICK + NUT MAT NHAN VAT + MENU SHEET
+    // ============================================================
+    (function chipMobileUI() {
+      const hud = document.getElementById('mobile-touch-hud');
+      const joyZone = document.getElementById('chip-joystick');
+      const joyKnob = document.getElementById('chip-joystick-knob');
+      const faceBtn = document.getElementById('chip-face-btn');
+      const overlay = document.getElementById('chip-menu-overlay');
+      const sheet = document.getElementById('chip-menu-sheet');
+      const grid = document.getElementById('chip-menu-grid');
+      const questBox = document.getElementById('chip-menu-quests');
+      if (!joyZone || !faceBtn || !sheet) return;
+
+      function chipSetDir(dir, isDown) {
+        const city = window.CityCommuteInstance;
+        const arena = window.Campus3DArenaInstance;
+        if (city && city.isCityMode) {
+          if (dir === 'up') city.cityKeys.forward = isDown;
+          if (dir === 'down') city.cityKeys.backward = isDown;
+          if (dir === 'left') city.cityKeys.left = isDown;
+          if (dir === 'right') city.cityKeys.right = isDown;
+        } else if (arena && arena.keys) {
+          if (dir === 'up') arena.keys.forward = isDown;
+          if (dir === 'down') arena.keys.backward = isDown;
+          if (dir === 'left') arena.keys.left = isDown;
+          if (dir === 'right') arena.keys.right = isDown;
+        }
+      }
+
+      // ---- Joystick analog: keo huong nao chay huong do (ke ca cheo) ----
+      const RADIUS = 38, DEAD = 0.30;
+      let joyId = null;
+      function joyReset() {
+        joyId = null;
+        joyKnob.style.transform = 'translate(0px, 0px)';
+        ['up', 'down', 'left', 'right'].forEach(d => chipSetDir(d, false));
+      }
+      function joyMove(clientX, clientY) {
+        const r = joyZone.getBoundingClientRect();
+        let dx = clientX - (r.left + r.width / 2);
+        let dy = clientY - (r.top + r.height / 2);
+        const len = Math.hypot(dx, dy);
+        if (len > RADIUS) { dx = dx / len * RADIUS; dy = dy / len * RADIUS; }
+        joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+        const nx = dx / RADIUS, ny = dy / RADIUS;
+        chipSetDir('up', ny < -DEAD);
+        chipSetDir('down', ny > DEAD);
+        chipSetDir('left', nx < -DEAD);
+        chipSetDir('right', nx > DEAD);
+      }
+      joyZone.addEventListener('pointerdown', (e) => {
+        joyId = e.pointerId;
+        try { joyZone.setPointerCapture(joyId); } catch (err) {}
+        joyMove(e.clientX, e.clientY);
+        e.preventDefault();
+      });
+      joyZone.addEventListener('pointermove', (e) => {
+        if (joyId !== null && e.pointerId === joyId) joyMove(e.clientX, e.clientY);
+      });
+      ['pointerup', 'pointercancel'].forEach(ev => joyZone.addEventListener(ev, () => { if (joyId !== null) joyReset(); }));
+
+      // ---- Bat/tat lop dieu khien theo trang thai choi ----
+      function refreshHudVisibility() {
+        const city = window.CityCommuteInstance;
+        const arena = window.Campus3DArenaInstance;
+        let on = false;
+        if (city && city.isCityMode) on = true;
+        else if (arena && arena.renderer && arena.renderer.domElement) {
+          // Chi bat khi khung 3D chiem phan dang ke cua vung nhin (tranh de len man hinh chu)
+          const r = arena.renderer.domElement.getBoundingClientRect();
+          const vis = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+          if (r.width > 0 && vis > window.innerHeight * 0.35) on = true;
+        }
+        [hud, joyZone, faceBtn].forEach(el => { if (el) el.classList.toggle('chip-hud-on', on); });
+      }
+      setInterval(refreshHudVisibility, 700);
+      refreshHudVisibility();
+
+      // ---- Menu sheet ----
+      function app() { return window.chipApp || window.ChipGameInstance; }
+      function closeMenu() {
+        overlay.classList.remove('open');
+        sheet.classList.remove('open');
+        document.body.classList.remove('chip-modal-open');
+      }
+      function chipOpen(fn) {
+        closeMenu();
+        if (typeof window.ChipCloseAllModals === 'function') window.ChipCloseAllModals();
+        if (typeof fn === 'function') fn();
+      }
+      function clickId(id) { const el = document.getElementById(id); if (el) el.click(); }
+      function callApp(method, arg) {
+        const a = app();
+        if (a && typeof a[method] === 'function') {
+          try { a[method](arg); } catch (err) { /* giu im lang, khong vo game */ }
+        }
+      }
+      const FEATURES = [
+        ['🏙️', 'Ra Phố 3D', () => clickId('btn-commute-bike')],
+        ['📜', 'Nhiệm Vụ', () => callApp('openQuestModal')],
+        ['🛍️', 'Cửa Hàng', () => callApp('openShopModal', 'outfits')],
+        ['🍢', 'Ăn Vặt', () => callApp('openCoBaySnackShopModal')],
+        ['🎣', 'Câu Cá', () => callApp('openFishingModal')],
+        ['🃏', 'Lật Thẻ', () => callApp('openLibraryMemoryMinigame')],
+        ['⚽', 'Sút Phạt', () => callApp('openSoccerPenaltyMinigame')],
+        ['⚔️', 'Đấu Boss', () => callApp('openBossBattleMinigame')],
+        ['♾️', 'Vô Tận', () => callApp('openEndlessQuizMode')],
+        ['🐒', 'Thiên Đình', () => { const a = app(); let ok = false; if (a && typeof a.openCelestialQuestModal === 'function') { try { a.openCelestialQuestModal('sun_wukong'); ok = true; } catch (err) {} } if (!ok) callApp('openQuestModal'); }],
+        ['🔢', 'Toán 5C4', () => callApp('openMathClassroomModal')],
+        ['🎲', 'Ô Ăn Quan', () => callApp('openFolkGameModal')],
+        ['🏆', 'Xếp Hạng', () => callApp('openLeaderboardModal')],
+        ['📖', 'Bí Kíp 5', () => clickId('btn-grammar-notebook')]
+      ];
+      function buildGrid() {
+        if (!grid || grid.childElementCount) return;
+        FEATURES.forEach(([e, t, fn]) => {
+          const b = document.createElement('button');
+          b.className = 'chip-menu-gb';
+          b.innerHTML = `<span class="e">${e}</span><span class="t">${t}</span>`;
+          b.addEventListener('click', () => chipOpen(fn));
+          grid.appendChild(b);
+        });
+      }
+      function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+      function renderQuests() {
+        if (!questBox) return;
+        const qm = window.CampusQuestInstance;
+        const quests = (qm && Array.isArray(qm.quests)) ? qm.quests : [];
+        const open = quests.filter(q => !q.claimed).slice(0, 6);
+        if (!open.length) {
+          questBox.innerHTML = '<div class="chip-menu-empty">Chưa có dữ liệu nhiệm vụ — bấm nút 📜 Nhiệm Vụ ở trên để mở Sổ Tay Nhiệm Vụ.</div>';
+          return;
+        }
+        questBox.innerHTML = '';
+        open.forEach(q => {
+          const goal = Math.max(1, q.goal || 1);
+          const cur = Math.min(goal, q.current || 0);
+          const pct = Math.round(cur / goal * 100);
+          const done = cur >= goal;
+          const row = document.createElement('div');
+          row.className = 'chip-menu-q';
+          row.innerHTML = `<span class="e">${esc(q.npcIcon || '📜')}</span>` +
+            `<span><span class="nm">${esc(q.title || 'Nhiệm vụ')}</span>` +
+            `<span class="bar" style="display:block"><i style="width:${pct}%"></i></span></span>` +
+            `<span class="pr">${cur}/${goal}</span>`;
+          const btn = document.createElement('button');
+          btn.className = 'btn' + (done ? '' : '');
+          btn.textContent = done ? 'Nhận Thưởng' : 'Đi Làm';
+          btn.addEventListener('click', () => chipOpen(() => callApp('openQuestModal', q.category || 'all')));
+          row.appendChild(btn);
+          questBox.appendChild(row);
+        });
+      }
+      function renderHeader() {
+        const nameEl = document.getElementById('chip-menu-player');
+        if (nameEl) {
+          const n = (document.getElementById('player-name-text') || {}).textContent || 'Hà My (5C4)';
+          const exp = (document.getElementById('exp-text') || {}).textContent || '';
+          nameEl.textContent = `${n.trim()}${exp ? ' · ' + exp.trim() : ''}`;
+        }
+        const coinEl = document.getElementById('chip-menu-coins');
+        if (coinEl) {
+          const eco = window.CampusEconomyInstance;
+          const coins = eco && typeof eco.coins === 'number' ? eco.coins : 0;
+          const stars = eco && typeof eco.stars === 'number' ? eco.stars : 0;
+          coinEl.textContent = `🪙 ${coins} Xu · ⭐ ${stars}`;
+        }
+      }
+      function openMenu() {
+        if (typeof window.ChipCloseAllModals === 'function') window.ChipCloseAllModals();
+        buildGrid();
+        renderHeader();
+        renderQuests();
+        overlay.classList.add('open');
+        sheet.classList.add('open');
+        document.body.classList.add('chip-modal-open');
+      }
+      faceBtn.addEventListener('click', openMenu);
+      overlay.addEventListener('click', closeMenu);
+      const xBtn = document.getElementById('chip-menu-close');
+      if (xBtn) xBtn.addEventListener('click', closeMenu);
+      window.ChipOpenMenu = openMenu;
+      window.ChipCloseMenu = closeMenu;
+      if (window.CampusQuestInstance && typeof window.CampusQuestInstance.onChange === 'function') {
+        window.CampusQuestInstance.onChange(() => { if (sheet.classList.contains('open')) { renderQuests(); renderHeader(); } });
       }
     })();
   </script>

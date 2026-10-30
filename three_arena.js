@@ -12002,6 +12002,28 @@ class RobloxClassroom3D {
 
     window.addEventListener('touchend', endDrag);
 
+    // [MOBILE-FIX] Pinch 2 ngon tay de phong to / thu nho camera (thay con lan chuot)
+    let pinchDist = null;
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        pinchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        endDrag();
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && pinchDist) {
+        const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        this.cameraDistance += (pinchDist - d) * 0.03;
+        this.cameraDistance = Math.max(this.minDistance, Math.min(this.maxDistance, this.cameraDistance));
+        pinchDist = d;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) pinchDist = null;
+    });
+
     // Zoom xa gần bằng con lăn chuột
     canvas.addEventListener('wheel', (e) => {
       e.preventDefault();

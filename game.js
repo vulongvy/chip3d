@@ -6133,3 +6133,70 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 600);
   }
 });
+
+// ============================================================
+// [MOBILE-FIX] MODAL MANAGER: mo modal moi thi dong het modal cu,
+// khoa HUD cam ung o phia sau khi co modal dang mo.
+// ============================================================
+window.ChipCloseAllModals = function () {
+  document.querySelectorAll('.campus-modal-overlay, .modal-overlay').forEach(el => {
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  ['google-maps-fullscreen-modal', 'campus-story-quest-modal', 'streetview-360-viewport'].forEach(id => {
+    const m = document.getElementById(id);
+    if (m) { m.style.display = 'none'; m.classList.remove('active'); }
+  });
+  if (typeof window.ChipCloseMenu === 'function') window.ChipCloseMenu();
+  document.body.classList.remove('chip-modal-open');
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  const OPENERS = [
+    'openQuestModal', 'openShopModal', 'openFishingModal', 'openCanteenModal',
+    'openCoBaySnackShopModal', 'openLeaderboardModal', 'openCelestialQuestModal',
+    'openMathClassroomModal', 'openFolkGameModal', 'openBotanicalQuizModal',
+    'openHonorRollModal', 'openBunnySanctuaryModal', 'openVendingMachineModal',
+    'openPhotoBoothModal', 'openReadingNookModal', 'openSoccerPenaltyMinigame',
+    'openLibraryMemoryMinigame', 'openBossBattleMinigame', 'openEndlessQuizMode',
+    'showVictoryModal'
+  ];
+  function wrapOpeners(target) {
+    if (!target) return;
+    OPENERS.forEach(name => {
+      const orig = target[name];
+      if (typeof orig === 'function' && !orig.__chipWrapped) {
+        const wrapped = function (...args) {
+          if (typeof window.ChipCloseAllModals === 'function') window.ChipCloseAllModals();
+          const r = orig.apply(this, args);
+          document.body.classList.add('chip-modal-open');
+          return r;
+        };
+        wrapped.__chipWrapped = true;
+        target[name] = wrapped;
+      }
+    });
+  }
+  // chipApp da duoc tao boi listener DOMContentLoaded dang ky truoc o tren
+  wrapOpeners(window.chipApp);
+  wrapOpeners(window.StoryQuestlineInstance);
+  setTimeout(() => { wrapOpeners(window.chipApp); wrapOpeners(window.StoryQuestlineInstance); }, 1500);
+
+  // Dong bo class khoa HUD: bat ky overlay nao dang hien thi deu khoa HUD
+  function syncModalBodyClass() {
+    let anyOpen = false;
+    document.querySelectorAll('.campus-modal-overlay, .modal-overlay').forEach(el => {
+      if (el.classList.contains('active') || (el.style.display && el.style.display !== 'none')) anyOpen = true;
+    });
+    ['google-maps-fullscreen-modal', 'campus-story-quest-modal'].forEach(id => {
+      const m = document.getElementById(id);
+      if (m && m.style.display && m.style.display !== 'none') anyOpen = true;
+    });
+    const sheet = document.getElementById('chip-menu-sheet');
+    if (sheet && sheet.classList.contains('open')) anyOpen = true;
+    document.body.classList.toggle('chip-modal-open', anyOpen);
+  }
+  const mo = new MutationObserver(syncModalBodyClass);
+  mo.observe(document.body, { attributes: true, attributeFilter: ['style', 'class'], subtree: true });
+  syncModalBodyClass();
+});

@@ -6490,6 +6490,11 @@ body.city-driving-active canvas.vice-city-canvas-fullscreen {
     transform: translateX(-50%) scale(1.05);
     box-shadow: 0 14px 36px rgba(0, 0, 0, 0.7), 0 0 32px rgba(244, 63, 94, 0.85);
   }
+}
+/* [MOBILE-FIX] Dong ngoac cua @keyframes pulsePrompt bi thieu trong ban goc:
+   trinh duyet coi toan bo CSS phia sau la nam trong keyframes nen khong ap dung
+   (radar, Google Maps modal, Mobile Touch HUD va cac va mobile deu chet). */
+
 /* ========================================================
    GTA VICE CITY RADAR MINIMAP & NPC DIALOGUE OVERLAYS
    ======================================================== */
@@ -6750,4 +6755,245 @@ body.city-driving-active canvas.vice-city-canvas-fullscreen {
 .mobile-act-cam {
   background: linear-gradient(135deg, rgba(14, 165, 233, 0.85), rgba(2, 132, 199, 0.85));
   border-color: #bae6fd;
+}
+
+/* ==============================================================
+   [MOBILE-FIX 29/10] GIAO DIEN MOBILE: CHONG MEO OVAL, COMPACT
+   LANDSCAPE, MODAL DVH, JOYSTICK, NUT MAT NHAN VAT, MENU SHEET
+   ============================================================== */
+
+/* 1) Phan tu tron khong bi flex ep det thanh oval nua */
+.player-avatar { flex-shrink: 0; }
+.btn-icon-round { flex-shrink: 0; }
+.stat-pill { flex-shrink: 0; white-space: nowrap; }
+
+/* 2) Lop dieu khien cam ung chi bat khi vao che do choi (JS gan class) */
+@media (hover: none) and (pointer: coarse), (max-width: 1024px) {
+  .mobile-touch-hud { display: none; }
+  .mobile-touch-hud.chip-hud-on { display: block; }
+}
+/* Khi co modal dang mo: khoa moi thao tac cua HUD phia sau */
+body.chip-modal-open .mobile-touch-hud,
+body.chip-modal-open .chip-hud-face,
+body.chip-modal-open .chip-joystick-zone {
+  pointer-events: none !important;
+  opacity: 0.35;
+}
+
+/* 3) Joystick analog (thay D-Pad lam chinh; D-Pad cu giu lam du phong an di) */
+.chip-joystick-zone {
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  width: 128px;
+  height: 128px;
+  z-index: 99996;
+  display: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.chip-joystick-zone.chip-hud-on { display: block; }
+.chip-joystick-base {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.20);
+  border: 2.5px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.30);
+}
+.chip-joystick-knob {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 56px; height: 56px;
+  margin-left: -28px; margin-top: -28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.30);
+}
+.chip-joystick-label {
+  position: absolute; left: 0; right: 0; bottom: 7px;
+  text-align: center;
+  color: #fff; font-size: 10.5px; font-weight: 800;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
+  pointer-events: none;
+}
+
+/* 4) Nut mat nhan vat (mo Menu) goc trai tren khi dang choi */
+.chip-hud-face {
+  position: fixed;
+  top: max(10px, env(safe-area-inset-top));
+  left: max(10px, env(safe-area-inset-left));
+  z-index: 99996;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none; border: none; padding: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.chip-hud-face.chip-hud-on { display: flex; }
+.chip-hud-face .chip-face-circ {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  background: #e0e7ff;
+}
+.chip-hud-face img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 50% 12%;
+  display: block;
+}
+.chip-hud-face .chip-face-lab {
+  background: rgba(15, 23, 42, 0.72);
+  color: #fff;
+  font-size: 10px; font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.4px;
+  font-family: 'Nunito', Arial, sans-serif;
+}
+
+/* 5) Menu sheet: phan bo ro rang, du nut chuc nang + nhiem vu */
+.chip-menu-overlay {
+  position: fixed; inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  z-index: 100000;
+  display: none;
+}
+.chip-menu-overlay.open { display: block; }
+.chip-menu-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  max-height: calc(100dvh - 24px);
+  background: #f8fafc;
+  z-index: 100001;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -10px 34px rgba(0, 0, 0, 0.4);
+  font-family: 'Nunito', Arial, sans-serif;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.chip-menu-sheet.open { display: flex; }
+.chip-menu-grab {
+  width: 52px; height: 5px; border-radius: 999px;
+  background: #cbd5e1; margin: 7px auto 2px; flex: none;
+}
+.chip-menu-head {
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 16px 7px; flex: none;
+}
+.chip-menu-ava {
+  width: 42px; height: 42px; border-radius: 50%;
+  overflow: hidden; border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); flex: none;
+  background: #e0e7ff;
+}
+.chip-menu-ava img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; display: block; }
+.chip-menu-ttl { font-size: 17px; font-weight: 900; color: #1e2a52; }
+.chip-menu-sub { font-size: 11.5px; font-weight: 700; color: #64748b; }
+.chip-menu-coin {
+  background: #fef9c3; color: #a16207; font-weight: 800;
+  font-size: 13.5px; padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+}
+.chip-menu-x {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fee2e2; color: #dc2626;
+  font-size: 17px; font-weight: 900; border: none;
+  display: flex; align-items: center; justify-content: center;
+  flex: none; cursor: pointer;
+}
+.chip-menu-body { overflow-y: auto; padding: 2px 16px 14px; -webkit-overflow-scrolling: touch; }
+.chip-menu-sect {
+  font-size: 12.5px; font-weight: 900; color: #7c3aed;
+  letter-spacing: 0.6px; margin: 8px 0 7px;
+}
+.chip-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+@media (max-width: 560px) {
+  .chip-menu-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.chip-menu-gb {
+  background: #fff; border: 1.5px solid #e2e8f0; border-radius: 14px;
+  min-height: 60px; padding: 6px 2px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  cursor: pointer; font-family: 'Nunito', Arial, sans-serif;
+}
+.chip-menu-gb .e { font-size: 22px; line-height: 1.1; }
+.chip-menu-gb .t { font-size: 11px; font-weight: 800; color: #334155; text-align: center; }
+.chip-menu-gb:active { transform: scale(0.95); background: #eef2ff; }
+.chip-menu-q {
+  display: flex; align-items: center; gap: 10px;
+  background: #fff; border: 1.5px solid #e2e8f0; border-radius: 14px;
+  padding: 8px 12px; margin-bottom: 7px;
+}
+.chip-menu-q .e { font-size: 21px; }
+.chip-menu-q .nm { font-size: 13.5px; font-weight: 800; color: #1e293b; }
+.chip-menu-q .bar { width: 150px; height: 7px; background: #e5e7eb; border-radius: 999px; margin-top: 3px; overflow: hidden; }
+.chip-menu-q .bar i { display: block; height: 100%; background: #22c55e; border-radius: 999px; }
+.chip-menu-q .pr { font-size: 11px; font-weight: 700; color: #64748b; white-space: nowrap; }
+.chip-menu-q .btn {
+  margin-left: auto; background: linear-gradient(135deg, #38bdf8, #0284c7);
+  color: #fff; font-weight: 900; font-size: 12.5px;
+  padding: 9px 14px; border-radius: 999px; border: none;
+  white-space: nowrap; cursor: pointer; min-height: 44px;
+}
+.chip-menu-q .btn.wait { background: #e2e8f0; color: #94a3b8; }
+.chip-menu-empty { font-size: 13px; font-weight: 700; color: #64748b; padding: 6px 2px; }
+
+/* 6) Compact cho man hinh cam ung ngang thap (iPhone landscape) */
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) and (max-height: 500px),
+       (orientation: landscape) and (max-height: 500px) and (max-width: 1024px) {
+  body { padding: 6px; }
+  .app-container { gap: 8px; }
+  .player-dashboard { padding: 6px 12px; gap: 8px; border-radius: 16px; flex-wrap: nowrap; }
+  .player-info-group { gap: 8px; min-width: 0; }
+  .player-avatar { width: 38px; height: 38px; font-size: 1.3rem; border-width: 2px; }
+  .player-name { font-size: 0.92rem; white-space: nowrap; }
+  .player-rank-badge { font-size: 0.62rem; padding: 1px 6px; }
+  .exp-bar-container { width: 84px; height: 8px; }
+  #exp-text, .exp-text { font-size: 0.62rem !important; }
+  .dashboard-stats { gap: 6px; flex-wrap: nowrap; }
+  .btn-commute-bike, .btn-header-streetview, .btn-grammar-notebook, .btn-reset-progress {
+    padding: 6px 10px !important; font-size: 0.72rem !important; white-space: nowrap;
+  }
+  .stat-pill { padding: 4px 9px; font-size: 0.8rem; }
+  .btn-icon-round { width: 38px; height: 38px; font-size: 1rem; }
+  .grade-switcher-bar { padding: 6px 10px; gap: 8px; border-radius: 16px; flex-wrap: nowrap; }
+  .grade-switcher-title { font-size: 0.78rem; white-space: nowrap; }
+  .grade-tabs { gap: 6px; flex-wrap: nowrap; }
+  .grade-tab-btn { padding: 5px 9px; border-radius: 12px; gap: 6px; }
+  .grade-tab-btn .tab-emoji { font-size: 1.15rem; }
+  .grade-tab-btn .tab-title { font-size: 0.78rem; }
+  .grade-tab-btn .tab-sub { font-size: 0.58rem; }
+  .grade-tab-btn .tab-badge { font-size: 0.55rem; padding: 1px 5px; }
+  .main-screen-card { min-height: 0; padding: 12px; border-radius: 16px; }
+  .main-plaza-3d-viewport { height: min(380px, calc(100dvh - 170px)); }
+
+  /* Modal theo chieu cao that cua thiet bi, noi dung cuon ben trong */
+  .campus-modal-overlay { padding: 8px; }
+  .campus-modal-card { max-height: calc(100dvh - 16px); }
+  .notebook-card { max-height: calc(100dvh - 16px); width: 97%; }
+  .victory-card { max-height: calc(100dvh - 16px); overflow-y: auto; padding: 20px 18px; }
+  .campus-modal-close, .btn-close-modal { min-width: 44px; min-height: 44px; }
+  #google-maps-fullscreen-modal { padding: 8px; }
+
+  /* Radar ban do trong pho: thu nho de khong che nua man hinh */
+  #vice-city-radar-container { width: 176px; bottom: 12px; left: 12px; }
+  #vice-city-radar-card-frame { width: 176px; height: 132px; }
+  #vice-city-radar-canvas { width: 176px !important; height: 132px !important; }
+
+  /* Cum nut cam ung cu: gon lai, tranh de len joystick */
+  .mobile-actions-container { bottom: 16px; right: 14px; gap: 7px; }
+  .mobile-act-btn { padding: 7px 11px; font-size: 0.74rem; }
+  .mobile-dpad-container { display: none; }
 }
